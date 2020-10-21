@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>模型预览</title>
+  <link rel="stylesheet" type="text/css" href="../../css/normalize.css" />
+  <link rel="stylesheet" type="text/css" href="../../css/base.css" />
+  <link rel="stylesheet" type="text/css" href="../../css/font-awesome.min.css" />
+  <link rel="stylesheet" type="text/css" href="../../css/menu_bubble.css" />
+  <link rel="stylesheet" type="text/css" href="../../css/switch.css" />
+  <link rel="stylesheet" type="text/css" href="../../css/jquery.json-viewer.css" />
+  <style media="screen">
+    * {
+      margin: 0;
+      padding: 0
+    }
+
+    html,
+    body {
+      height: 100%;
+    }
+
+
+
+    .point {
+      width: 25px;
+      height: 25px;
+      border-radius: 25px;
+      margin-bottom: 10px;
+      cursor: pointer;
+    }
+
+    button {
+      background-color: #FF5722;
+      padding: 10px;
+      border-radius: 5px;
+      margin-left: 15px;
+    }
+
+    @keyframes twinkling {
+      0% {
+        opacity: 0.2;
+        transform: scale(1);
+      }
+
+      50% {
+        opacity: 0.5;
+        transform: scale(1.12);
+      }
+
+      100% {
+        opacity: 0.2;
+        transform: scale(1);
+      }
+    }
+
+    .circle-wrap {
+      position: absolute;
+      left: 100px;
+      top: 100px;
+    }
+
+    .circle {
+      position: relative;
+      width: 24px;
+      height: 24px;
+    }
+
+    .small-circle {
+      border-radius: 50%;
+      width: 12px;
+      height: 12px;
+      background: #FF0033;
+      position: absolute;
+    }
+
+    .big-circle {
+      position: absolute;
+      top: -6px;
+      left: -6px;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: #FF0033;
+      animation: twinkling 1s infinite ease-in-out;
+      animation-fill-mode: both;
+    }
+
+    @keyframes scale {
+      0% {
+        transform: scale(1)
+      }
+
+      50%,
+      75% {
+        transform: scale(3)
+      }
+
+      78%,
+      100% {
+        opacity: 0
+      }
+    }
+
+    @keyframes scales {
+      0% {
+        transform: scale(1)
+      }
+
+      50%,
+      75% {
+        transform: scale(2)
+      }
+
+      78%,
+      100% {
+        opacity: 0
+      }
+    }
+
+    .smallcircle2 {
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      background-color: #ffffff;
+      border-radius: 50%;
+      top: 100px;
+      left: 200px;
+    }
+
+    .smallcircle2:before {
+      content: '';
+      display: block;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      opacity: .4;
+      background-color: #ffffff;
+      animation: scale 1s infinite cubic-bezier(0, 0, .49, 1.02);
+    }
+
+    .bigcircle2 {
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      opacity: .4;
+      background-color: #ffffff;
+      top: 100px;
+      left: 200px;
+      animation: scales 1s infinite cubic-bezier(0, 0, .49, 1.02);
+    }
+
+    @keyframes scaless {
+      0% {
+        transform: scale(1)
+      }
+
+      50%,
+      75% {
+        transform: scale(3)
+      }
+
+      78%,
+      100% {
+        opacity: 0
+      }
+    }
+
+    .item {
+      position: absolute;
+      width: 14px;
+      height: 14px;
+      background-color: #E91E63;
+      border-radius: 50%;
+    }
+
+    .item:before {
+      content: '';
+      display: block;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      opacity: .7;
+      background-color: #FFFF00;
+      animation: scaless 1s infinite cubic-bezier(0, 0, .49, 1.02);
+    }
+
+    .model {
+      flex: 1
+    }
+  </style>
+  <script src="https://static.bimface.com/api/BimfaceSDKLoader/BimfaceSDKLoader@latest-release.js"
+    charset="utf-8"></script>
+  <script src="../../js/common/snap.svg-min.js"></script>
+</head>
+
+<body>
+
+  <div style="width:80px;height:150px;position:absolute;right:50px;top:50px;z-index:99999;display: block;">
+    <div class="point" id="fire" title="消防单层" style="background-color:crimson"></div>
+  </div>
+
+  <div id="identity" style="display: none;position: absolute;left:100px;bottom:50px;z-index: 99999;">
+    <div class="iden">
+      <div class="circle" style="background-color: rgba(137, 200, 156, 1);"></div>
+      <span style="font-size: 13px;color:rgba(137, 200, 156, 1);position: relative;left: 22px;top: -18px;">开启</span>
+    </div>
+    <div class="iden">
+      <div class="circle" style="background-color: rgba(222, 119, 116, 1);"></div><span
+        style="font-size: 13px;color:rgba(222, 119, 116, 1);position: relative;left: 22px;top: -18px;">故障</span>
+    </div>
+    <div class="iden">
+      <div class="circle" style="background-color: rgba(78, 114, 167, 1);"></div><span
+        style="font-size: 13px;color:rgba(78, 114, 167, 1);position: relative;left: 22px;top: -18px;">关闭</span>
+    </div>
+  </div>
+
+  <div class='model' id="view"></div>
+  <div class="menu-wrap">
+    <nav class="menu">
+      <div class="icon-list">
+        <a href="#" title="打开或关闭目录树"><i class="fa fa-fw fa-list-ul"></i><span>目录树</span><label><input
+              class="mui-switch mui-switch-anim" type="checkbox" onclick="onDirClickHandler(this)" /></label></a>
+        <a href="#" title="打开或关闭工具栏"><i class="fa fa-fw fa-gavel"></i><span>工具栏</span><label><input
+              class="mui-switch mui-switch-anim" type="checkbox" onclick="onToolClickHandler(this)" /></label></a>
+        <a href="#" title="打开或关闭轮廓线"><i class="fa fa-fw fa-circle-o"></i><span>轮廓线</span><label><input
+              class="mui-switch mui-switch-anim" type="checkbox" onclick="onWireFrameClickHandler(this)" /></label></a>
+        <a href="#" title="启用或禁用辅助坐标轴"><i class="fa fa-fw fa-line-chart"></i><span>坐标轴</span><label><input
+              class="mui-switch mui-switch-anim" type="checkbox" checked
+              onclick="onAxisClickHandler(this)" /></label></a>
+        <a href="#" title="启用或禁用鼠标悬停"><i class="fa fa-fw fa-hand-o-up"></i><span>鼠标悬停</span><label><input
+              class="mui-switch mui-switch-anim" type="checkbox" onclick="onMouseHoverClickHandler(this)" /></label></a>
+        <a href="#" title="启用或禁用ViewHouse"><i class="fa fa-fw fa-home"></i><span>VIEWHOUSE</span><label><input
+              class="mui-switch mui-switch-anim" type="checkbox" checked
+              onclick="onViewHouseClickHandler(this)" /></label></a>
+        <a href="#" title="控制器"><i class="fa fa-fw fa-gavel"></i><span>参数控制器</span><label><input
+              class="mui-switch mui-switch-anim" type="checkbox" onclick="onParameterClickHandler(this)" /></label></a>
+        <a href="#" title="启用条件查询"><i class="fa fa-fw fa-gavel"></i><span>启用条件查询</span><label><input
+              class="mui-switch mui-switch-anim" type="checkbox" onclick="onConditionQueryHandler(this)" /></label></a>
+        <a href="#" title="构件信息查看"><i class="fa fa-fw fa-gavel"></i><span>构件信息查看</span><label><input
+              class="mui-switch mui-switch-anim" type="checkbox" onclick="onComponentQueryHandler(this)" /></label></a>
+        <a href="#" title="复制构件"><i class="fa fa-fw fa-gavel"></i><span>复制构件ID</span><label><input
+              class="mui-switch mui-switch-anim" type="checkbox" onclick="onRecordObjectIdHandler(this)" /></label></a>
+      </div>
+    </nav>
+
+
+    <div class="morph-shape" id="morph-shape"
+      data-morph-open="M-7.312,0H15c0,0,66,113.339,66,399.5C81,664.006,15,800,15,800H-7.312V0z;M-7.312,0H100c0,0,0,113.839,0,400c0,264.506,0,400,0,400H-7.312V0z">
+      <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 100 800"
+        preserveAspectRatio="none">
+        <path d="M-7.312,0H0c0,0,0,113.839,0,400c0,264.506,0,400,0,400h-7.312V0z" />
+      </svg>
+    </div>
+  </div>
+
+  <pre id='json-renderer' class="pre"></pre>
+  <button class="menu-button" id="open-button"></button>
+  <div class="content-wrap">
+    <div class="content" style="height: 100%;">
+    </div>
+  </div>
+
+
+  <script src="../../js/preview/preview_1938153798985728.js" type="module"></script>
+  <script src="../../js/common/snap.svg-min.js"></script>
+  <script src="../../js/common/classie.js"></script>
+  <script src="../../js/common/main4.js"></script>
+  <script src="../../js/common/switch.js"></script>
+  <script src="../../js/common/dat.gui.min.js"></script>
+  <script src="../../js/common/jquery-3.3.1.min.js"></script>
+  <script src="../../js/common/jquery.json-viewer.js" type="module"></script>
+  <script src="../../js/common/layer.js"></script>
+</body>
+
+</html>

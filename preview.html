@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>模型预览</title>
+  <link rel="stylesheet" type="text/css" href="css/normalize.css" />
+  <link rel="stylesheet" type="text/css" href="css/base.css" />
+  <link rel="stylesheet" type="text/css" href="css/font-awesome.min.css" />
+  <link rel="stylesheet" type="text/css" href="css/menu_bubble.css" />
+  <link rel="stylesheet" type="text/css" href="css/switch.css" />
+  <style media="screen">
+    * {
+      margin: 0;
+      padding: 0
+    }
+
+    html,
+    body {
+      height: 100%
+    }
+
+    button {
+      background-color: #FF5722;
+      padding: 10px;
+      border-radius: 5px;
+      margin-left: 15px;
+    }
+
+    .model {
+      flex: 1
+    }
+  </style>
+  <script src="https://static.bimface.com/api/BimfaceSDKLoader/BimfaceSDKLoader@latest-release.js"
+    charset="utf-8"></script>
+  <script src="js/common/snap.svg-min.js"></script>
+</head>
+
+<body>
+
+  <div style="display: none;position: absolute;left:125px;top:25px;z-index: 99999;width: 60%;height: 30px;">
+    <button type="button" class="button" id="showExclusiveComponentsByObjectData">按需加载</button>
+  </div>
+
+  <div id="identity" style="display: none;position: absolute;left:100px;bottom:50px;z-index: 99999;">
+    <div class="iden">
+      <div class="circle" style="background-color: rgba(137, 200, 156, 1);"></div>
+      <span style="font-size: 13px;color:rgba(137, 200, 156, 1);position: relative;left: 22px;top: -18px;">开启</span>
+    </div>
+    <div class="iden">
+      <div class="circle" style="background-color: rgba(222, 119, 116, 1);"></div><span
+        style="font-size: 13px;color:rgba(222, 119, 116, 1);position: relative;left: 22px;top: -18px;">故障</span>
+    </div>
+    <div class="iden">
+      <div class="circle" style="background-color: rgba(78, 114, 167, 1);"></div><span
+        style="font-size: 13px;color:rgba(78, 114, 167, 1);position: relative;left: 22px;top: -18px;">关闭</span>
+    </div>
+  </div>
+
+
+
+  <div class='model' id="view"></div>
+  <div id="levels" style="display: none;position: absolute;left:125px;top:25px;z-index: 99999;width: 60%;height: 30px;">
+    <button class="fl" data-level="-1" data-high=-5200>B01</button>
+    <button class="fl" data-level="1" data-high=0>F01</button>
+    <button class="fl" data-level="2" data-high=4500>F02</button>
+    <button class="fl" data-level="3" data-high=8300>F03</button>
+    <button class="fl" data-level="4" data-high=12100>F04</button>
+    <button class="fl" data-level="5" data-high=15900>F05</button>
+    <button class="fl" data-level="6" data-high=19700>F06</button>
+    <br />
+
+    <button class="fl2" data-level="-1" data-high=-5200>B01</button>
+    <button class="fl2" data-level="1" data-high=0>F01</button>
+    <button class="fl2" data-level="2" data-high=4500>F02</button>
+    <button class="fl2" data-level="3" data-high=8300>F03</button>
+    <button class="fl2" data-level="4" data-high=12100>F04</button>
+    <button class="fl2" data-level="5" data-high=15900>F05</button>
+    <button class="fl2" data-level="6" data-high=19700>F06</button>
+    <br />
+
+    <button class="fl3" data-level="-1" data-high=-5200>B01</button>
+    <button class="fl3" data-level="1" data-high=0>F01</button>
+    <button class="fl3" data-level="2" data-high=4500>F02</button>
+    <button class="fl3" data-level="3" data-high=8300>F03</button>
+    <button class="fl3" data-level="4" data-high=12100>F04</button>
+    <button class="fl3" data-level="5" data-high=15900>F05</button>
+    <button class="fl3" data-level="6" data-high=19700>F06</button>
+
+    <br />
+    <button class="fl4" data-level="-1" data-high=-5200>B01</button>
+    <button class="fl4" data-level="1" data-high=0>F01</button>
+    <button class="fl4" data-level="2" data-high=4500>F02</button>
+    <button class="fl4" data-level="3" data-high=8300>F03</button>
+    <button class="fl4" data-level="4" data-high=12100>F04</button>
+    <button class="fl4" data-level="5" data-high=15900>F05</button>
+    <button class="fl4" data-level="6" data-high=19700>F06</button>
+  </div>
+  <div class="menu-wrap">
+    <nav class="menu">
+      <div class="icon-list">
+        <a href="#" title="打开或关闭目录树"><i class="fa fa-fw fa-list-ul"></i><span>目录树</span><label><input
+              class="mui-switch mui-switch-anim" type="checkbox" onclick="onDirClickHandler(this)" /></label></a>
+        <a href="#" title="打开或关闭工具栏"><i class="fa fa-fw fa-gavel"></i><span>工具栏</span><label><input
+              class="mui-switch mui-switch-anim" type="checkbox" onclick="onToolClickHandler(this)" /></label></a>
+        <a href="#" title="打开或关闭轮廓线"><i class="fa fa-fw fa-circle-o"></i><span>轮廓线</span><label><input
+              class="mui-switch mui-switch-anim" type="checkbox" onclick="onWireFrameClickHandler(this)" /></label></a>
+        <a href="#" title="启用或禁用辅助坐标轴"><i class="fa fa-fw fa-line-chart"></i><span>坐标轴</span><label><input
+              class="mui-switch mui-switch-anim" type="checkbox" checked
+              onclick="onAxisClickHandler(this)" /></label></a>
+        <a href="#" title="启用或禁用鼠标悬停"><i class="fa fa-fw fa-hand-o-up"></i><span>鼠标悬停</span><label><input
+              class="mui-switch mui-switch-anim" type="checkbox" onclick="onMouseHoverClickHandler(this)" /></label></a>
+        <a href="#" title="启用或禁用ViewHouse"><i class="fa fa-fw fa-home"></i><span>VIEWHOUSE</span><label><input
+              class="mui-switch mui-switch-anim" type="checkbox" checked
+              onclick="onViewHouseClickHandler(this)" /></label></a>
+        <a href="#" title="楼层"><i class="fa fa-fw fa-home"></i><span>楼层</span><label><input
+              class="mui-switch mui-switch-anim" type="checkbox" onclick="onLevelClickHandler(this)" /></label></a>
+        <a href="#" title="控制器"><i class="fa fa-fw fa-gavel"></i><span>参数控制器</span><label><input
+              class="mui-switch mui-switch-anim" type="checkbox" onclick="onParameterClickHandler(this)" /></label></a>
+      </div>
+    </nav>
+
+
+    <div class="morph-shape" id="morph-shape"
+      data-morph-open="M-7.312,0H15c0,0,66,113.339,66,399.5C81,664.006,15,800,15,800H-7.312V0z;M-7.312,0H100c0,0,0,113.839,0,400c0,264.506,0,400,0,400H-7.312V0z">
+      <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 100 800"
+        preserveAspectRatio="none">
+        <path d="M-7.312,0H0c0,0,0,113.839,0,400c0,264.506,0,400,0,400h-7.312V0z" />
+      </svg>
+    </div>
+  </div>
+
+  <button class="menu-button" id="open-button">Open Menu</button>
+  <div class="content-wrap">
+    <div class="content" style="height: 100%;">
+      <!-- <div style="height:300px;"></div> -->
+    </div>
+  </div><!-- /content-wrap -->
+
+
+  <script src="js/preview.js" type="module"></script>
+
+  <script src="js/common/classie.js"></script>
+  <script src="js/common/main4.js"></script>
+  <script src="js/common/switch.js"></script>
+  <script src="js/common/dat.gui.min.js"></script>
+</body>
+
+</html>

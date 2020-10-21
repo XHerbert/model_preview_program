@@ -1,0 +1,3 @@
+rem generate jdoc running ... ...
+jsdoc -r ./js/package/
+pause

@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>BIMFACE model scene</title>
+  <style type="text/css">
+    * {
+      margin: 0;
+      padding: 0;
+    }
+
+    html,
+    body {
+      height: 100%;
+    }
+
+    .buttons {
+      font-size: 0;
+    }
+
+    .button {
+      margin: 5px 0 5px 5px;
+      width: 90px;
+      height: 30px;
+      border-radius: 3px;
+      border: none;
+      background: #11DAB7;
+      color: #FFFFFF;
+    }
+
+    .main {
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      height: 100%;
+    }
+
+    #domId {
+      flex: 1;
+    }
+  </style>
+</head>
+
+<body>
+  <div class='main'>
+    <div class='buttons'>
+      <button class="button" id="btnAddObject" onclick="addExternalObject()">添加FBX构件</button>
+      <button class="button" id="btnAnimation" onclick="fbxAnimation()">开始FBX动画</button>
+      <button class="button" id="btnAddObj" onclick="addObj()">添加OBJ模型</button>
+    </div>
+    <div id="domId"></div>
+  </div>
+  <script src="https://static.bimface.com/api/BimfaceSDKLoader/BimfaceSDKLoader@latest-release.js"></script>
+  <script>
+    var viewToken = '008dd41e95424a2bb1467a8b878ec14c';
+    // 声明Viewer及App
+    var viewer3D;
+    var app;
+    // 判断场景是否加载完成
+    var viewAdded = false;
+    // 配置JSSDK加载项
+    window.onload = function () {
+      var loaderConfig = new BimfaceSDKLoaderConfig();
+      loaderConfig.viewToken = viewToken;
+      BimfaceSDKLoader.load(loaderConfig, successCallback, failureCallback);
+    }
+    // 加载成功回调函数
+    function successCallback(viewMetaData) {
+      loadScript("https://static.bimface.com/resources/ExternalObject/Loader/inflate.min.js");
+      loadScript("https://static.bimface.com/resources/ExternalObject/Loader/FBXLoader.js");
+      loadScript("https://static.bimface.com/resources/ExternalObject/Loader/OBJLoader.js");
+      loadScript("https://static.bimface.com/resources/ExternalObject/Loader/MTLLoader.js");
+      var dom4Show = document.getElementById('domId');
+      // 设置WebApplication3D的配置项
+      var webAppConfig = new Glodon.Bimface.Application.WebApplication3DConfig();
+      webAppConfig.domElement = dom4Show;
+      // 创建WebApplication3D，用以显示模型
+      app = new Glodon.Bimface.Application.WebApplication3D(webAppConfig);
+      app.addView(viewToken);
+      viewer3D = app.getViewer();
+      viewer3D.addEventListener(Glodon.Bimface.Viewer.Viewer3DEvent.ViewAdded, function () {
+        window.onresize = function () {
+          viewer3D.resize(document.documentElement.clientWidth, document.documentElement.clientHeight - 40);
+        }
+        viewAdded = true;
+      });
+    }
+    // 加载失败回调函数
+    function failureCallback(error) {
+      console.log(error);
+    }
+
+    // ************************** 添加外部构件 **************************
+    // 构件库地址：https://bimface.com/objectlib
+
+    var isFbxAdded = false;
+    var isObjAdded = false;
+    var mixer;
+    var action;
+    var fbxId;
+    var objId;
+    function addExternalObject() {
+      if (!viewAdded || isFbxAdded) {
+        return;
+      }
+      var fbxUrl = "pipeline.fbx";
+      // 构造FBX加载器
+      var fbxLoader = new FBXLoader();
+      // 通过加载器加载资源，获取FBX对象
+      fbxLoader.load(fbxUrl, function (object) {
+        // 将该对象添加为外部构件
+        extObjMng = new Glodon.Bimface.Viewer.ExternalObjectManager(viewer3D);
+        extObjMng.addObject("robot", object);
+        fbxId = extObjMng.getObjectIdByName("robot");
+        isFbxAdded = true;
+        // 将构件移至初始位置
+        extObjMng.translate(fbxId, new THREE.Vector3(0, -12000, -450));
+        extObjMng.scale(fbxId, new THREE.Vector3(10, 10, 10));
+        extObjMng.rotateX(fbxId, Math.PI / 2);
+        viewer3D.render();
+        // 构造FBX构件的动画播放器
+        ///mixer = new THREE.AnimationMixer(object);
+        ///action = mixer.clipAction(object.animations[0]);
+        ///action.play();
+      });
+    }
+
+    // ************************** 设置FBX动画 **************************
+    var isAnimationActivated = false;
+    var animationId;
+    function fbxAnimation() {
+      if (!viewAdded || !isFbxAdded) {
+        return;
+      }
+      var clock = new THREE.Clock();
+      if (!isAnimationActivated) {
+        function animate() {
+          animationId = requestAnimationFrame(animate);
+          var delta = clock.getDelta();
+          if (mixer) {
+            mixer.update(delta);
+            viewer3D.getExternalObjectByName(fbxId).updateMatrixWorld();
+            viewer3D.render();
+          }
+        }
+        animate();
+        isAnimationActivated = true;
+        setButtonText("btnAnimation", "暂停FBX动画");
+      } else {
+        cancelAnimationFrame(animationId);
+        isAnimationActivated = false;
+        setButtonText("btnAnimation", "开始FBX动画");
+      }
+    }
+
+    function addObj() {
+      if (!viewAdded || isObjAdded) {
+        return;
+      }
+      var mtlUrl = "https://static.bimface.com/attach/31829db05f9f441a8996ecabbca6a03c_item.mtl";
+      var objUrl = "https://static.bimface.com/attach/cd2a90dbe2fa491eac35ba0d7e016014_item.obj";
+      // 构造OBJ、MTL加载器
+      var mtlLoader = new THREE.MTLLoader();
+      var objLoader = new THREE.OBJLoader();
+      extObjMng = new Glodon.Bimface.Viewer.ExternalObjectManager(viewer3D);
+      mtlLoader.load(mtlUrl, function (materials) {
+        materials.preload();
+        objLoader.setMaterials(materials);
+        ///通过加载器加载资源，获取OBJ对象
+        objLoader.load(objUrl, function (obj) {
+          // 将该对象添加为外部构件
+          extObjMng.addObject("closet", obj);
+          objId = extObjMng.getObjectIdByName("closet");
+          isObjAdded = true;
+          // 将构件移至初始位置
+          extObjMng.translate(objId, { x: -5200, y: -5651, z: -450 });
+          extObjMng.rotateX(objId, Math.PI / 2);
+          viewer3D.addSelectedComponentsById([objId]);
+          viewer3D.zoomToSelectedComponents();
+          viewer3D.render();
+        });
+      });
+    }
+
+
+    // 加载js脚本
+    function loadScript(url, callback) {
+      var script = document.createElement("script");
+      script.type = "text/javascript";
+      script.onload = function () {
+        callback && callback();
+      }
+      script.src = url;
+      document.head.appendChild(script);
+    }
+
+    // ************************** 按钮文字 **************************
+    function setButtonText(btnId, text) {
+      var dom = document.getElementById(btnId);
+      if (dom != null && dom.nodeName == "BUTTON") {
+        dom.innerText = text;
+      }
+    }
+  </script>
+</body>
+
+</html>

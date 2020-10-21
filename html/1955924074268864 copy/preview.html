@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>多模型加载问题 数字运维</title>
+  <link rel="stylesheet" type="text/css" href="../../css/normalize.css" />
+  <link rel="stylesheet" type="text/css" href="../../css/base.css" />
+  <link rel="stylesheet" type="text/css" href="../../css/menu_bubble.css" />
+  <style media="screen">
+    * {
+      margin: 0;
+      padding: 0
+    }
+
+    html,
+    body {
+      height: 100%
+    }
+
+    .model {
+      flex: 1
+    }
+  </style>
+  <script src="https://static.bimface.com/api/BimfaceSDKLoader/BimfaceSDKLoader@latest-release.js"
+    charset="utf-8"></script>
+
+</head>
+
+<body>
+
+  <div style="width:80px;height:150px;position:absolute;right:50px;top:50px;z-index:99999;display: block;">
+    <div class="point" id="floor" title="单层" style="background-color:#FF5722"></div>
+    <div class="point" id="net" title="多次点击可切换管网" style="background-color:#0b48e0e1"></div>
+  </div>
+
+  <div class='model' id="view"></div>
+
+  <script type="text/javascript">
+
+    var isShow = false;
+    window.onload = function () {
+      var loaderConfig = new BimfaceSDKLoaderConfig();
+      loaderConfig.viewToken = 'a91b1597c1a04bc3893a0aa1b282c7d3';
+      BimfaceSDKLoader.load(loaderConfig, onSDKLoadSucceeded, onSDKLoadFailed);
+    }
+
+
+    function onSDKLoadSucceeded(viewMetaData) {
+      if (viewMetaData.viewType == "3DView") {
+        var view = document.getElementById('view');
+        var config = new Glodon.Bimface.Application.WebApplication3DConfig();
+        config.domElement = view;
+        app = new Glodon.Bimface.Application.WebApplication3D(config);
+        viewer = app.getViewer();
+        viewer.setCameraAnimation(true);
+        app.addView(BimfaceLoaderConfig.viewToken);
+
+
+        viewer.setBorderLineEnabled(false);
+        window.viewer = viewer;
+        viewer.setBackgroundColor = new Glodon.Web.Graphics.Color(53, 53, 66, 1);
+
+        viewer.addEventListener(Glodon.Bimface.Viewer.Viewer3DEvent.ViewAdded, function () {
+
+          viewer.enableShadow(false);
+          viewer.setExposureShift(0.0);//曝光会影响色值
+
+
+          // 创建标签容器
+          var drawableConfig = new Glodon.Bimface.Plugins.Drawable.DrawableContainerConfig();
+          drawableConfig.viewer = viewer;
+          drawableContainer = new Glodon.Bimface.Plugins.Drawable.DrawableContainer(drawableConfig);
+
+
+          //相机视角
+          // setCamera(viewer, function () {
+          //     //开始加载设备模型 方式一：addView
+          //     //viewer.addView('57d62010926b472b96a5ec8e2bdd8dda');
+          // });
+          bindEvent();
+
+          // 后台加载设备
+          viewer.addView('c18fbe10aae447359195b37fdd0c5f62');
+
+          viewer.addEventListener(Glodon.Bimface.Viewer.Viewer3DEvent.ViewLoading, function (e) {
+            document.getElementsByClassName('bf-loading')[0].style.display = 'none';
+
+          });
+
+          viewer.addEventListener(Glodon.Bimface.Viewer.Viewer3DEvent.ViewChanged, function (e) {
+            console.log(e);
+            if (viewer.getModel) {
+              viewer.getModel(1955944555185120).hideAllComponents();
+              viewer.getModel(1955944555185120).showComponentsByObjectData([{ "family": "ATAH-吊顶式空气处理机组" }]);
+
+              if (viewer.getModel(1957231937914880)) {
+                viewer.getModel(1957231937914880).overrideComponentsColorByObjectData([], new Glodon.Web.Graphics.Color(167, 167, 167, 1));
+              }
+
+            }
+
+            viewer.render();
+            setTimeout(() => {
+              viewer.enableShadow(true);
+              viewer.render();
+            }, 800);
+
+            // viewer.setCameraStatus({
+            //     "name": "persp",
+            //     "position": {
+            //         "x": -49744.03539447472,
+            //         "y": -29596.266722380522,
+            //         "z": 119970.95511615428
+            //     },
+            //     "target": {
+            //         "x": 208884.2683213659,
+            //         "y": 229032.98960825242,
+            //         "z": -138656.40941157585
+            //     },
+            //     "up": {
+            //         "x": 0,
+            //         "y": -0.0000036731731979354334,
+            //         "z": 0.9999999999932537
+            //     },
+            //     "fov": 45,
+            //     "zoom": 1,
+            //     "version": 1,
+            //     "coordinateSystem": "world"
+            // });
+
+            // layer.msg("load finished!");
+          })
+
+          //TODO:声明下方单击事件中需要的变量
+          viewer.addEventListener(Glodon.Bimface.Viewer.Viewer3DEvent.MouseClicked, function (e) {
+
+
+          });
+        });
+      }
+    };
+
+    function onSDKLoadFailed(error) {
+      console.log("Failed to load SDK!");
+    };
+
+
+    function setCamera(viewer, callback) {
+      let start = {
+        "name": "persp",
+        "position": {
+          "x": -242001.30420991874,
+          "y": -148406.6096029717,
+          "z": 263994.03086844477
+        },
+        "target": {
+          "x": 16626.9995059219,
+          "y": 110222.64672766118,
+          "z": 5366.666340714643
+        },
+        "up": {
+          "x": 0,
+          "y": -0.0000036731731081360366,
+          "z": 0.9999999999932537
+        },
+        "fov": 45,
+        "zoom": 1,
+        "version": 1,
+        "coordinateSystem": "world"
+      };
+
+      let target = {
+        "name": "persp",
+        "position": {
+          "x": -49744.03539447472,
+          "y": -29596.266722380522,
+          "z": 119970.95511615428
+        },
+        "target": {
+          "x": 208884.2683213659,
+          "y": 229032.98960825242,
+          "z": -138656.40941157585
+        },
+        "up": {
+          "x": 0,
+          "y": -0.0000036731731979354334,
+          "z": 0.9999999999932537
+        },
+        "fov": 45,
+        "zoom": 1,
+        "version": 1,
+        "coordinateSystem": "world"
+      };
+
+      viewer.setCameraStatus(start, () => {
+        setTimeout(() => {
+          viewer.setCameraStatus(target, () => {
+            bindEvent();
+            if (callback) {
+              callback();
+            };
+            viewer.recordCustomedHomeview(target);
+          })
+        }, 800);
+      });
+    }
+
+    function bindEvent() {
+      //模拟单层   
+      // 57d62010926b472b96a5ec8e2bdd8dda 暖通空调 c18fbe10aae447359195b37fdd0c5f62
+      // 4da4a8e8bc2f48baad0c92197e031ce4 一层带内墙
+      // 4223546d6a3b4fdcb80bd38bef2f71fa 一层外墙  a91b1597c1a04bc3893a0aa1b282c7d3
+
+      document.getElementById('floor').addEventListener('click', function () {
+        viewer.showExclusiveComponentsByObjectData([{ "levelName": "F02" }]);
+        viewer.getModel(1955944555185120).showExclusiveComponentsByObjectData([{ "levelName": "F02" }]);
+        viewer.getModel(1955944555185120).hideAllComponents();
+        viewer.getModel(1955944555185120).showComponentsByObjectData([{ "family": "ATAH-吊顶式空气处理机组" }]);
+
+        viewer.hideView('a91b1597c1a04bc3893a0aa1b282c7d3');
+        viewer.removeView('a91b1597c1a04bc3893a0aa1b282c7d3');
+
+        viewer.addView('eaedd460919d49e29235203b9e21ec6a');
+        // viewer.setCameraStatus({
+        //     "name": "persp",
+        //     "position": {
+        //         "x": -43962.85913353434,
+        //         "y": -55454.0580275083,
+        //         "z": 90788.02181015073
+        //     },
+        //     "target": {
+        //         "x": 232165.3367021639,
+        //         "y": 253243.7015667429,
+        //         "z": -79871.65134309157
+        //     },
+        //     "up": {
+        //         "x": 0.2539944741860429,
+        //         "y": 0.2839493731781604,
+        //         "z": 0.924586156371966
+        //     },
+        //     "fov": 45,
+        //     "zoom": 1,
+        //     "version": 1,
+        //     "coordinateSystem": "world"
+        // }, () => {
+        //     // viewer.showView('57d62010926b472b96a5ec8e2bdd8dda');
+        //     viewer.render();
+        // })
+        viewer.render();
+      });
+
+      document.getElementById('net').addEventListener('click', function () {
+        isShow = !isShow;
+        if (isShow) {
+          //切换时会报错（蓝色按钮可多次单击进行切换）
+          viewer.getModel(1955944555185120).showComponentsByObjectData([{ "levelName": "F02" }]);
+          viewer.getModel(1955944555185120).overrideComponentsColorByObjectData([{ "family": "风管隔热层" }], new Glodon.Web.Graphics.Color('#0DADF7', 1));
+          viewer.getModel(1955944555185120).overrideComponentsColorByObjectData([{ "family": "ATAH-吊顶式空气处理机组" }], new Glodon.Web.Graphics.Color('#F8E21F', 1));
+
+        } else {
+          viewer.getModel(1955944555185120).hideAllComponents();
+        }
+        viewer.render();
+      })
+    }
+
+  </script>
+
+
+</body>
+
+</html>

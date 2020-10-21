@@ -1,0 +1,16 @@
+.circle {
+      width: 15px;
+      height: 15px;
+      background: red;
+      border-radius: 15px;
+    }
+
+    .iden {
+      width: 70px;
+      height: 21px;
+      border-radius: 5px;
+      background-color: rgba(14, 22, 25, 1);
+      margin-bottom: 10px;
+      padding-top: 3px;
+      padding-left: 7px;
+    }
