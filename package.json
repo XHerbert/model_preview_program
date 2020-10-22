@@ -1,0 +1,25 @@
+{
+  "name": "model_preview_program",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "_three@0.115.0@three": "^0.115.0",
+    "_three@0.85.2@three": "^0.85.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/XHerbert/model_preview_program.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/XHerbert/model_preview_program/issues"
+  },
+  "homepage": "https://github.com/XHerbert/model_preview_program#readme"
+}

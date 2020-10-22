@@ -35,8 +35,9 @@ function onSDKLoadSucceeded(viewMetaData) {
 
         window.viewer = viewer;
         webUtils.viewer = window.viewer;
-        eoManager = new Glodon.Bimface.Viewer.ExternalObjectManager(viewer);
+
         viewer.addEventListener(Glodon.Bimface.Viewer.Viewer3DEvent.ViewAdded, function () {
+            eoManager = new Glodon.Bimface.Viewer.ExternalObjectManager(viewer);
             let modelHelper = new ModelHelper(viewer);
             modelHelper.createAixsHelper(viewer);
             let scene = modelHelper.getScene(), camera = modelHelper.getPerspectiveCamera(), renderer = modelHelper.getRender();
@@ -193,7 +194,7 @@ function setCamera(viewer, callback) {
                 if (callback) {
                     callback();
                 };
-                viewer.recordCustomedHomeview(target);
+                viewer.recordCustomHomeview(target);
             })
         }, 800);
     });

@@ -10,8 +10,8 @@ import { RoomUtils } from './RoomUtils.js'
  * @fileOverview 模块功能：模型工具包
  * @module ModelHelper
  */
-function ModelHelper(viewer) {
-
+function ModelHelper(viewer, eoManager) {
+    this.eoManager = eoManager || null;
     this.viewer = viewer || null;
     this.webUtils = new WebUtils(this.viewer);
     this.roomUtils = new RoomUtils();
@@ -53,7 +53,10 @@ ModelHelper.prototype = Object.assign(ModelHelper.prototype, {
      */
     createAixsHelper: function (axisSize) {
         let axisHelper = new THREE.AxisHelper(axisSize || 3000);
-        this.viewer.addExternalObject("axisHelper", axisHelper);
+        if (this.eoManager) {
+            this.eoManager.addObject("axisHelper", axisHelper);
+        }
+        //this.viewer.addExternalObject();报错
     },
 
     /**
