@@ -5,7 +5,7 @@
 import { WebUtils } from '../package/WebUtils.js'
 import { ModelHelper } from '../package/ModelHelper.js'
 
-var app, viewer, drawableContainer, modelHelper, modelRenderBehaviour;
+var app, viewer, drawableContainer, modelHelper;
 const INTEGRATE_FILE = 1;
 var BimfaceLoaderConfig = new BimfaceSDKLoaderConfig();
 var webUtils = new WebUtils();
@@ -35,7 +35,6 @@ function onSDKLoadSucceeded(viewMetaData) {
         viewer.addEventListener(Glodon.Bimface.Viewer.Viewer3DEvent.ViewAdded, function () {
 
             modelHelper = new ModelHelper(viewer);
-            modelRenderBehaviour = new ModelRenderBehaviourList(viewer);
             let scene = modelHelper.getScene(), camera = modelHelper.getPerspectiveCamera(), renderer = modelHelper.getRender();
             renderer.domElement.addClass('canvasClass');
             window.myscene = scene;

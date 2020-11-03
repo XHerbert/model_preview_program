@@ -379,7 +379,7 @@ ModelHelper.prototype = Object.assign(ModelHelper.prototype, {
 
     /**
      * 执行模型行为列表
-     * @param {Array} data 
+     * @param {Array} data 模型行为队列数据，从接口获取
      */
     excuteModelBehaviour: function (data) {
         if (!data || !data.behaviourItemBeanList.length) {
