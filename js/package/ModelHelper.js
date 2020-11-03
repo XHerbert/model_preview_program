@@ -365,6 +365,56 @@ ModelHelper.prototype = Object.assign(ModelHelper.prototype, {
         let material = new Glodon.Bimface.Plugins.Material.Material(materialConfig);
         materialContainer.addMaterial(material);
     },
+
+    /**
+     * 恢复模型默认状态
+     */
+    resetModel: function () {
+        if (this.viewer) {
+            this.viewer.restoreAllDefault();
+            this.viewer.setView(Glodon.Bimface.Viewer.ViewOption.Home, null);
+            this.viewer.render();
+        }
+    },
+
+    /**
+     * 执行模型行为列表
+     * @param {Array} data 
+     */
+    excuteModelBehaviour: function (data) {
+        if (!data || !data.behaviourItemBeanList.length) {
+            return;
+        }
+
+        this.resetModel();
+        for (let i = 0, len = data.behaviourItemBeanList.length; i < len; i++) {
+            let method = data.behaviourItemBeanList[i].behaviour;
+            let params = data.behaviourItemBeanList[i].params;
+            //根据不同的key执行对应的方法
+            switch (method) {
+                case "overrideComponentsColorByObjectData":
+                    let color = data.behaviourItemBeanList[i].actionValue;
+                    let opacity = data.behaviourItemBeanList[i].opacity || 1;
+                    viewer.overrideComponentsColorByObjectData(JSON.parse(params), new Glodon.Web.Graphics.Color(color, opacity));
+                    break;
+                case "showComponentsByObjectData":
+                    viewer.showComponentsByObjectData(JSON.parse(params));
+                    break;
+                case "hideAllComponents":
+                    viewer.hideAllComponents();
+                    break;
+                case "hideComponentsByObjectData":
+                    viewer.hideComponentsByObjectData(JSON.parse(params));
+                    break;
+                case "showAllComponents":
+                    viewer.showAllComponents();
+                    break;
+                default:
+                    break;
+            }
+        }
+        viewer.render();
+    }
 });
 
 export { ModelHelper }

@@ -1,11 +1,11 @@
 /**
  * @author:xuhongbo
- * @function:
+ * @function:以此文件为样例，通过调用接口获取行为列表渲染模型
  */
 import { WebUtils } from '../package/WebUtils.js'
 import { ModelHelper } from '../package/ModelHelper.js'
 
-var app, viewer, drawableContainer;
+var app, viewer, drawableContainer, modelHelper, modelRenderBehaviour;
 const INTEGRATE_FILE = 1;
 var BimfaceLoaderConfig = new BimfaceSDKLoaderConfig();
 var webUtils = new WebUtils();
@@ -34,8 +34,8 @@ function onSDKLoadSucceeded(viewMetaData) {
         webUtils.viewer = window.viewer;
         viewer.addEventListener(Glodon.Bimface.Viewer.Viewer3DEvent.ViewAdded, function () {
 
-            let modelHelper = new ModelHelper(viewer);
-            //helper.createAixsHelper(viewer);
+            modelHelper = new ModelHelper(viewer);
+            modelRenderBehaviour = new ModelRenderBehaviourList(viewer);
             let scene = modelHelper.getScene(), camera = modelHelper.getPerspectiveCamera(), renderer = modelHelper.getRender();
             renderer.domElement.addClass('canvasClass');
             window.myscene = scene;
@@ -51,26 +51,12 @@ function onSDKLoadSucceeded(viewMetaData) {
             drawableContainer = new Glodon.Bimface.Plugins.Drawable.DrawableContainer(drawableConfig);
             webUtils.initModel();
 
-            viewer.hideAllComponents();
-            viewer.showComponentsByObjectData([
-                { "specialty": "给排水" },
-                { "specialty": "消防" },
-                { "familyType": "内墙 - A5.0蒸压加气砼砌块 - 砌筑砂浆M7.5 - 200" },
-                { "familyType": "内墙 - A3.5蒸压加气砼砌块 - 砌筑砂浆M5.0 - 200" },
-                { "familyType": "内墙 - A5.0蒸压加气砼砌块 - 砌筑砂浆M5.0 - 200" },
-                { "familyType": "内墙 - A5.0蒸压加气砼砌块 - 砌筑砂浆M7.5 - 150" },
-                { "familyType": "内墙 - A3.5蒸压加气砼砌块 - 砌筑砂浆M5.0 - 100" },
-                { "familyType": "内墙 - A5.0蒸压加气砼砌块 - 砌筑砂浆M5.0 - 100" },
-                { "familyType": "内墙 - A3.5蒸压加气砼砌块 - 砌筑砂浆M5.0 - 150" },
-                { "familyType": "内墙 - A5.0蒸压加气砼砌块 - 砌筑砂浆M7.5 - 300" },
-                { "familyType": "内墙 - A5.0蒸压加气砼砌块 - 砌筑砂浆M7.5 - 100" },
+            webUtils.getRenderModelBehaviour('glsms-xfbf').then((data) => {
+                modelHelper.excuteModelBehaviour(data);
+            });
 
-                { "categoryId": "-2000011" },
-                { "categoryId": "-2001300", "specialty": "结构" },
-                { "categoryId": "-2001330", "specialty": "结构" }]);
-            viewer.render();
             //相机视角
-            setCamera(viewer);
+            setCamera(viewer, bindEvent);
 
             //TODO:声明下方单击事件中需要的变量
             viewer.addEventListener(Glodon.Bimface.Viewer.Viewer3DEvent.MouseClicked, function (e) {
@@ -92,6 +78,25 @@ function onSDKLoadSucceeded(viewMetaData) {
         });
     }
 };
+
+var constants = {
+    behaviuorContainer: {
+        showComponentsByObjectData: function (param) {
+            viewer.showComponentsByObjectData(param);
+        },
+        hideAllComponents: function () {
+            viewer.hideAllComponents();
+        },
+        hideComponentsByObjectData: function (param) {
+            viewer.hideComponentsByObjectData(param);
+        },
+        overrideComponentsColorByObjectData: function (param, color, opacity) {
+            opacity = opacity || 1;
+            viewer.overrideComponentsColorByObjectData(param, new Glodon.Web.Graphics.Color(color, opacity));
+        },
+
+    }
+}
 
 function onSDKLoadFailed(error) {
     console.log("Failed to load SDK!");
@@ -159,5 +164,44 @@ function setCamera(viewer, callback) {
 }
 
 function bindEvent() {
-    //TODO:bind dom event
+
+    //慧云机房
+    document.getElementById("eletric").onclick = function (event) {
+        webUtils.getRenderModelBehaviour('glsms-hyjf').then((data) => {
+            modelHelper.excuteModelBehaviour(data);
+            viewer.setCameraStatus({
+                "name": "persp",
+                "position": {
+                    "x": -412.1704941515796,
+                    "y": 120298.02502319882,
+                    "z": 19106.70092837268
+                },
+                "target": {
+                    "x": 142532.22294988445,
+                    "y": -37415.8187923505,
+                    "z": -234324.13824917644
+                },
+                "up": {
+                    "x": 0.5142429372849778,
+                    "y": -0.5673817961068358,
+                    "z": 0.6431423628553008
+                },
+                "fov": 45,
+                "zoom": 1,
+                "version": 1,
+                "coordinateSystem": "world"
+            });
+            viewer.render();
+        });
+        event.stopPropagation();
+    };
+
+    //给水泵房
+    document.getElementById("water").onclick = function (event) {
+        console.log("excute ... ...");
+        webUtils.getRenderModelBehaviour('glsms-gsbf').then((data) => {
+            modelHelper.excuteModelBehaviour(data);
+        });
+        event.stopPropagation();
+    };
 }

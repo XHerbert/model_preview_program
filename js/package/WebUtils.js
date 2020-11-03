@@ -61,6 +61,30 @@ WebUtils.prototype = Object.assign(WebUtils.prototype, {
     },
 
     /**
+     * 获取模型行为列表
+     * @param {String} modelId 
+     * @param {String} referKey 
+     */
+    getRenderModelBehaviour: function (referKey) {
+        let behaviuorUrl = "http://10.0.197.82:90/wanda/bimModelEffective/getModelEffectivePipeline?referKey=" + referKey + "&projectId=390";
+        return new Promise(function (resolve, reject) {
+            let opt = {
+                url: behaviuorUrl,
+                type: 'GET',
+                contentType: 'application/json',
+                success: (res) => {
+                    if (res.code === 20000) {
+                        resolve(res.data);
+                    } else {
+                        console.error(res.message);
+                    }
+                }
+            };
+            $.ajax(opt);
+        })
+    },
+
+    /**
      * 加载js脚本
      * @param {String} url 脚本地址 
      * @param {Function} callback 加载成功回调 
