@@ -44,6 +44,7 @@ function onSDKLoadSucceeded(viewMetaData) {
             window.myscene = scene;
             renderer.shadowMap.enabled = true;
             viewer.enableShadow(true);
+            viewer.enableGlowEffect(true);
             viewer.setExposureShift(0.0);//曝光会影响色值
             renderer.alpha = true;
             renderer.setClearAlpha(0.08);
@@ -54,8 +55,16 @@ function onSDKLoadSucceeded(viewMetaData) {
             drawableContainer = new Glodon.Bimface.Plugins.Drawable.DrawableContainer(drawableConfig);
             webUtils.initModel();
 
-            viewer.overrideComponentsColorById(["ndae382c29-e035-4863-95bc-3be2b7c076f9"], webUtils.fromColor(66, 127, 207, 1));
-            // viewer.overrideComponentsColorByObjectData([], webUtils.fromColor(66, 127, 207, 1));
+            //viewer.overrideComponentsColorById(["ndae382c29-e035-4863-95bc-3be2b7c076f9"], webUtils.fromColor(66, 127, 207, 1));
+            viewer.overrideComponentsColorByObjectData([], webUtils.fromColor(66, 127, 207, 1));
+
+            // 测试发光效果
+            viewer.setGlowEffectById(["ndae382c29-e035-4863-95bc-3be2b7c076f9"], {
+                type: "body",
+                color: new Glodon.Web.Graphics.Color(66, 127, 207, 1),
+                intensity: 0.001,
+                spread: 1
+            });
 
             let src = 'http://static.bimface.com/resources/3DMarker/warner/warner_red.png';
             modelHelper.createMarker3DTag(markerContainer, src, { x: -315.96857436971857, y: 3709.8612403320276, z: 3112.4534935833517 }, "tooltip", _callback);

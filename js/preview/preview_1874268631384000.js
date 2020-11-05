@@ -55,6 +55,9 @@ function onSDKLoadSucceeded(viewMetaData) {
             setCamera(viewer);
             webUtils.getRenderModelBehaviour('glsms-zhtj').then((data) => {
                 modelHelper.excuteModelBehaviour(data);
+                viewer.hideComponentsById(["1757510252472064.2696643"]);
+                viewer.overrideComponentsColorById(["1757510252472064.2978544"], new Glodon.Web.Graphics.Color("#75b58a", 1));
+                viewer.render();
             });
 
             //TODO:声明下方单击事件中需要的变量

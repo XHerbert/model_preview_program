@@ -37,6 +37,7 @@ function onSDKLoadSucceeded(viewMetaData) {
             window.myscene = scene;
             renderer.shadowMap.enabled = true;
             viewer.enableShadow(true);
+            viewer.enableGlowEffect(true);
             viewer.setExposureShift(0.0);//曝光会影响色值
             renderer.alpha = true;
             renderer.setClearAlpha(0.08);
@@ -62,6 +63,14 @@ function onSDKLoadSucceeded(viewMetaData) {
             //手动调整设备颜色
             viewer.overrideComponentsColorById(["1771855777580864.4711684"], new Glodon.Web.Graphics.Color(157, 14, 70, 1));
             viewer.overrideComponentsColorById(["1771855777580864.4711685"], new Glodon.Web.Graphics.Color(113, 162, 160, 1));
+
+            // 测试发光效果
+            viewer.setGlowEffectById(["1771855777580864.4711685"], {
+                type: "outline",
+                color: new Glodon.Web.Graphics.Color(255, 0, 0, 1),
+                intensity: 1,
+                spread: 5
+            });
 
             //基础设置
             webUtils.initModel();

@@ -390,11 +390,13 @@ ModelHelper.prototype = Object.assign(ModelHelper.prototype, {
         for (let i = 0, len = data.behaviourItemBeanList.length; i < len; i++) {
             let method = data.behaviourItemBeanList[i].behaviour;
             let params = data.behaviourItemBeanList[i].params;
+            let color = '';
+            let opacity = 1;
             //根据不同的key执行对应的方法
             switch (method) {
                 case "overrideComponentsColorByObjectData":
-                    let color = data.behaviourItemBeanList[i].actionValue;
-                    let opacity = data.behaviourItemBeanList[i].opacity || 1;
+                    color = data.behaviourItemBeanList[i].actionValue.trim();
+                    opacity = Number(data.behaviourItemBeanList[i].opacity);
                     viewer.overrideComponentsColorByObjectData(JSON.parse(params), new Glodon.Web.Graphics.Color(color, opacity));
                     break;
                 case "showComponentsByObjectData":
@@ -408,6 +410,26 @@ ModelHelper.prototype = Object.assign(ModelHelper.prototype, {
                     break;
                 case "showAllComponents":
                     viewer.showAllComponents();
+                    break;
+                case "overrideComponentsColorById":
+                    color = data.behaviourItemBeanList[i].actionValue.trim();
+                    opacity = Number(data.behaviourItemBeanList[i].opacity);
+                    viewer.overrideComponentsColorById(JSON.parse(params), new Glodon.Web.Graphics.Color(color, opacity));
+                    break;
+                case "showComponentsById":
+                    viewer.showComponentsById(JSON.parse(params));
+                    break;
+                case "hideComponentsById":
+                    viewer.hideComponentsById(JSON.parse(params));
+                    break;
+                case "transparentComponentsByObjectData":
+                    viewer.transparentComponentsByObjectData(JSON.parse(params));
+                    break;
+                case "opaqueComponentsByObjectData":
+                    viewer.opaqueComponentsByObjectData(JSON.parse(params));
+                    break;
+                case "showExclusiveComponentsByObjectData":
+                    viewer.showExclusiveComponentsByObjectData(JSON.parse(params));
                     break;
                 default:
                     break;
