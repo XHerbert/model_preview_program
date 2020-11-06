@@ -5,6 +5,7 @@
 
 import { WebUtils } from './WebUtils.js'
 import { RoomUtils } from './RoomUtils.js'
+import { Constant } from './Constants.js'
 
 /**
  * @fileOverview 模块功能：模型工具包
@@ -394,41 +395,41 @@ ModelHelper.prototype = Object.assign(ModelHelper.prototype, {
             let opacity = 1;
             //根据不同的key执行对应的方法
             switch (method) {
-                case "overrideComponentsColorByObjectData":
+                case Constant.method.overrideComponentsColorByObjectData:
                     color = data.behaviourItemBeanList[i].actionValue.trim();
                     opacity = Number(data.behaviourItemBeanList[i].opacity);
                     viewer.overrideComponentsColorByObjectData(JSON.parse(params), new Glodon.Web.Graphics.Color(color, opacity));
                     break;
-                case "showComponentsByObjectData":
+                case Constant.method.showComponentsByObjectData:
                     viewer.showComponentsByObjectData(JSON.parse(params));
                     break;
-                case "hideAllComponents":
+                case Constant.method.hideAllComponents:
                     viewer.hideAllComponents();
                     break;
-                case "hideComponentsByObjectData":
+                case Constant.method.hideComponentsByObjectData:
                     viewer.hideComponentsByObjectData(JSON.parse(params));
                     break;
-                case "showAllComponents":
+                case Constant.method.showAllComponents:
                     viewer.showAllComponents();
                     break;
-                case "overrideComponentsColorById":
+                case Constant.method.overrideComponentsColorById:
                     color = data.behaviourItemBeanList[i].actionValue.trim();
                     opacity = Number(data.behaviourItemBeanList[i].opacity);
                     viewer.overrideComponentsColorById(JSON.parse(params), new Glodon.Web.Graphics.Color(color, opacity));
                     break;
-                case "showComponentsById":
+                case Constant.method.showComponentsById:
                     viewer.showComponentsById(JSON.parse(params));
                     break;
-                case "hideComponentsById":
+                case Constant.method.hideComponentsById:
                     viewer.hideComponentsById(JSON.parse(params));
                     break;
-                case "transparentComponentsByObjectData":
+                case Constant.method.transparentComponentsByObjectData:
                     viewer.transparentComponentsByObjectData(JSON.parse(params));
                     break;
-                case "opaqueComponentsByObjectData":
+                case Constant.method.opaqueComponentsByObjectData:
                     viewer.opaqueComponentsByObjectData(JSON.parse(params));
                     break;
-                case "showExclusiveComponentsByObjectData":
+                case Constant.method.showExclusiveComponentsByObjectData:
                     viewer.showExclusiveComponentsByObjectData(JSON.parse(params));
                     break;
                 default:
