@@ -157,3 +157,12 @@ let onDrawCustomAreaHandler = (obj) => {
         document.body.removeChild(button);
     }
 }
+
+//开启空间复制
+let onRecordOAreaHandler = (obj) => {
+    if (obj.checked) {
+        window.bim.recordArea = true;
+    } else {
+        window.bim.recordArea = false;
+    }
+}

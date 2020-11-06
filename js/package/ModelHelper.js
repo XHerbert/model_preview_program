@@ -368,6 +368,25 @@ ModelHelper.prototype = Object.assign(ModelHelper.prototype, {
     },
 
     /**
+     * 复制选中的房间边界信息
+     * @param {String} id 
+     */
+    copyBoundaryData: function (id) {
+        let boundary_data = '';
+        this.viewer.getAreas((d) => {
+            let rooms = d[0].rooms;
+            for (let h = 0, len = rooms.length; h < len; h++) {
+                if (rooms[h].id === id) {
+                    boundary_data = rooms[h];
+                    console.log(boundary_data);
+                    this.webUtils.copyStringValue(JSON.stringify(boundary_data));
+                    break;
+                }
+            }
+        });
+    },
+
+    /**
      * 恢复模型默认状态
      */
     resetModel: function () {

@@ -60,13 +60,23 @@ function onSDKLoadSucceeded(viewMetaData) {
                 if (window.bim.queryCondition) {
                     let condition = viewer.getObjectDataById(e.objectId);
                     webUtils.layerPanel("#json-renderer", "auto", "auto", "筛选条件", 'layui-layer-molv', condition);
+                    return;
                 }
 
                 if (window.bim.component) {
                     webUtils.layerPanel("#json-renderer", "auto", undefined, "构件信息", 'layui-layer-lan', e);
+                    return;
                 }
+
                 if (window.bim.recordObjectId) {
                     webUtils.copyStringValue(e.objectId);
+                    return;
+                }
+
+                if (window.bim.recordArea) {
+                    let id = e.objectId;
+                    modelHelper.copyBoundaryData(id);
+                    return;
                 }
                 //TODO:Click logic
 
