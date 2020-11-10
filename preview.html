@@ -11,6 +11,7 @@
   <link rel="stylesheet" type="text/css" href="css/font-awesome.min.css" />
   <link rel="stylesheet" type="text/css" href="css/menu_bubble.css" />
   <link rel="stylesheet" type="text/css" href="css/switch.css" />
+  <link rel="stylesheet" type="text/css" href="css/jquery.json-viewer.css" />
   <style media="screen">
     * {
       margin: 0;
@@ -62,7 +63,7 @@
 
 
   <div class='model' id="view"></div>
-  <div id="levels" style="display: none;position: absolute;left:125px;top:25px;z-index: 99999;width: 60%;height: 30px;">
+  <!-- <div id="levels" style="display: none;position: absolute;left:125px;top:25px;z-index: 99999;width: 60%;height: 30px;">
     <button class="fl" data-level="-1" data-high=-5200>B01</button>
     <button class="fl" data-level="1" data-high=0>F01</button>
     <button class="fl" data-level="2" data-high=4500>F02</button>
@@ -97,7 +98,7 @@
     <button class="fl4" data-level="4" data-high=12100>F04</button>
     <button class="fl4" data-level="5" data-high=15900>F05</button>
     <button class="fl4" data-level="6" data-high=19700>F06</button>
-  </div>
+  </div> -->
   <div class="menu-wrap">
     <nav class="menu">
       <div class="icon-list">
@@ -108,17 +109,19 @@
         <a href="#" title="打开或关闭轮廓线"><i class="fa fa-fw fa-circle-o"></i><span>轮廓线</span><label><input
               class="mui-switch mui-switch-anim" type="checkbox" onclick="onWireFrameClickHandler(this)" /></label></a>
         <a href="#" title="启用或禁用辅助坐标轴"><i class="fa fa-fw fa-line-chart"></i><span>坐标轴</span><label><input
-              class="mui-switch mui-switch-anim" type="checkbox" checked
-              onclick="onAxisClickHandler(this)" /></label></a>
+              class="mui-switch mui-switch-anim" type="checkbox" onclick="onAxisClickHandler(this)" /></label></a>
         <a href="#" title="启用或禁用鼠标悬停"><i class="fa fa-fw fa-hand-o-up"></i><span>鼠标悬停</span><label><input
               class="mui-switch mui-switch-anim" type="checkbox" onclick="onMouseHoverClickHandler(this)" /></label></a>
         <a href="#" title="启用或禁用ViewHouse"><i class="fa fa-fw fa-home"></i><span>VIEWHOUSE</span><label><input
-              class="mui-switch mui-switch-anim" type="checkbox" checked
-              onclick="onViewHouseClickHandler(this)" /></label></a>
-        <a href="#" title="楼层"><i class="fa fa-fw fa-home"></i><span>楼层</span><label><input
-              class="mui-switch mui-switch-anim" type="checkbox" onclick="onLevelClickHandler(this)" /></label></a>
-        <a href="#" title="控制器"><i class="fa fa-fw fa-gavel"></i><span>参数控制器</span><label><input
-              class="mui-switch mui-switch-anim" type="checkbox" onclick="onParameterClickHandler(this)" /></label></a>
+              class="mui-switch mui-switch-anim" type="checkbox" onclick="onViewHouseClickHandler(this)" /></label></a>
+        <a href="#" title="启用条件查询"><i class="fa fa-fw fa-gavel"></i><span>启用条件查询</span><label><input
+              class="mui-switch mui-switch-anim" type="checkbox" onclick="onConditionQueryHandler(this)" /></label></a>
+        <a href="#" title="构件信息查看"><i class="fa fa-fw fa-gavel"></i><span>构件信息查看</span><label><input
+              class="mui-switch mui-switch-anim" type="checkbox" onclick="onComponentQueryHandler(this)" /></label></a>
+        <a href="#" title="复制构件"><i class="fa fa-fw fa-gavel"></i><span>复制构件ID</span><label><input
+              class="mui-switch mui-switch-anim" type="checkbox" onclick="onRecordObjectIdHandler(this)" /></label></a>
+        <a href="#" title="复制空间"><i class="fa fa-fw fa-gavel"></i><span>复制空间</span><label><input
+              class="mui-switch mui-switch-anim" type="checkbox" onclick="onRecordOAreaHandler(this)" /></label></a>
       </div>
     </nav>
 
@@ -131,7 +134,7 @@
       </svg>
     </div>
   </div>
-
+  <pre id='json-renderer' class="pre"></pre>
   <button class="menu-button" id="open-button">Open Menu</button>
   <div class="content-wrap">
     <div class="content" style="height: 100%;">
@@ -146,6 +149,9 @@
   <script src="js/common/main4.js"></script>
   <script src="js/common/switch.js"></script>
   <script src="js/common/dat.gui.min.js"></script>
+  <script src="js/common/jquery-3.3.1.min.js"></script>
+  <script src="js/common/jquery.json-viewer.js" type="module"></script>
+  <script src="js/common/layer.js"></script>
 </body>
 
 </html>

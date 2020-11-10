@@ -1,13 +1,15 @@
 import { WebUtils } from '../js/package/WebUtils.js'
+import { ModelHelper } from '../js/package/ModelHelper.js'
 import { Elevator } from './usr/elevator.js'
 
-var app, viewer, curve;
+var app, viewer, curve, modelHelper;
 var webUtils = new WebUtils();
 var BimfaceLoaderConfig = new BimfaceSDKLoaderConfig();
 BimfaceLoaderConfig.viewToken = webUtils.getURLParameter('viewToken');
 
 BimfaceSDKLoader.load(BimfaceLoaderConfig, onSDKLoadSucceeded, onSDKLoadFailed);
 function onSDKLoadSucceeded(viewMetaData) {
+    console.warn("豆姐专用页面");
     if (viewMetaData.viewType == "3DView") {
         var view = document.getElementById('view');
         var config = new Glodon.Bimface.Application.WebApplication3DConfig();
@@ -18,25 +20,47 @@ function onSDKLoadSucceeded(viewMetaData) {
         viewer.setCameraAnimation(true);
         //CLOUD.EnumRendererType.IncrementRender = true;
         app.addView(BimfaceLoaderConfig.viewToken);
-        ///viewer.addModel(viewMetaData);//该方法加入的模型不能渲染烘焙        
-        viewer.setBackgroundColor(new Glodon.Web.Graphics.Color(Math.floor(Math.random() * 256), Math.floor(Math.random() * 256), Math.floor(Math.random() * 256), 1), new Glodon.Web.Graphics.Color(Math.floor(Math.random() * 256), Math.floor(Math.random() * 256), Math.floor(Math.random() * 256), 0.5));
+        //viewer.addModel(viewMetaData);//该方法加入的模型不能渲染烘焙        
         viewer.setBorderLineEnabled(false);
-        //雾化颜色
-        //viewer.setBackgroundColor(new Glodon.Web.Graphics.Color(204, 224, 255, 1));
         window.viewer = viewer;
         webUtils.viewer = viewer;
-
+        modelHelper = new ModelHelper(viewer);
         viewer.addEventListener(Glodon.Bimface.Viewer.Viewer3DEvent.ViewAdded, function () {
+            webUtils.initModel();
 
+            viewer.addEventListener(Glodon.Bimface.Viewer.Viewer3DEvent.MouseClicked, function (e) {
+
+                if (!e.objectId) return;
+                //测试禁用选中
+                //viewer.removeSelectedId([e.objectId]);
+                //viewer.render();
+
+                if (window.bim.queryCondition) {
+                    let condition = viewer.getObjectDataById(e.objectId);
+                    webUtils.layerPanel("#json-renderer", "auto", "auto", "筛选条件", 'layui-layer-molv', condition);
+                    return;
+                }
+
+                if (window.bim.component) {
+                    webUtils.layerPanel("#json-renderer", "auto", undefined, "构件信息", 'layui-layer-lan', e);
+                    return;
+                }
+
+                if (window.bim.recordObjectId) {
+                    webUtils.copyStringValue(e.objectId);
+                    return;
+                }
+
+                if (window.bim.recordArea) {
+                    let id = e.objectId;
+                    modelHelper.copyBoundaryData(id);
+                    return;
+                }
+            })
         });
     }
 };
 
-function successCallback() {
-    // var bimfaceLoaderConfig = new BimfaceSDKLoaderConfig();
-    // bimfaceLoaderConfig.viewToken = getURLParameter('viewToken');
-    // BimfaceSDKLoader.load(BimfaceLoaderConfig, onSubSDKLoadSucceeded, onSDKLoadFailed);
-}
 
 function onSubSDKLoadSucceeded() {
     viewer.showExclusiveComponentsByObjectData([
