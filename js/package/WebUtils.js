@@ -61,6 +61,56 @@ WebUtils.prototype = Object.assign(WebUtils.prototype, {
     },
 
     /**
+     * 获取主设备影响空间
+     * @param {Number} modelTyp 模型类型
+     * @param {Number} projectId 项目
+     * @param {Number} modelId 模型
+     * @param {String} objectId 设备构件Id
+     */
+    getInflunceArea: function (modelTyp, projectId, modelId, objectId) {
+        let _url = 'http://localhost:8078/bim/equipmentRefer/getInfluenceRoomByEquipment?modelTyp=' + modelTyp + '&modelId=' + modelId + '&projectId=' + projectId + '&baseEquipment=' + objectId;
+        return new Promise(function (resolve, reject) {
+            let option = {
+                url: _url,
+                type: 'GET',
+                contentType: 'application/json',
+                success: (res) => {
+                    if (res.code === 20000) {
+                        resolve(res.data);
+                    } else {
+                        console.error(res.message);
+                    }
+                }
+            };
+            $.ajax(option);
+        })
+    },
+
+    /**
+     * 获取主设备末端
+     * @param {Number} projectId 项目
+     * @param {String} baseEquipment 设备构件Id
+     */
+    getTerminalComponents: function (projectId, baseEquipment) {
+        let _url = 'http://localhost:8078/bim/equipmentRefer/getTerminalByEquipment?projectId=' + projectId + '&baseEquipment=' + baseEquipment;
+        return new Promise(function (resolve, reject) {
+            let option = {
+                url: _url,
+                type: 'GET',
+                contentType: 'application/json',
+                success: (res) => {
+                    if (res.code === 20000) {
+                        resolve(res.data);
+                    } else {
+                        console.error(res.message);
+                    }
+                }
+            };
+            $.ajax(option);
+        })
+    },
+
+    /**
      * 获取模型行为列表
      * @param {String} modelId 
      * @param {String} referKey 
