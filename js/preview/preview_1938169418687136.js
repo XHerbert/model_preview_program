@@ -10,7 +10,7 @@ const INTEGRATE_FILE = 1;
 var BimfaceLoaderConfig = new BimfaceSDKLoaderConfig();
 var webUtils = new WebUtils();
 var hidetoken;
-
+//
 webUtils.getViewtoken(1938169418687136, INTEGRATE_FILE).then((token) => {
     BimfaceLoaderConfig.viewToken = token;
     hidetoken = token;

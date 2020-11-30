@@ -22,6 +22,7 @@ function onSDKLoadSucceeded(viewMetaData) {
         app.addView(BimfaceLoaderConfig.viewToken);
         //viewer.addModel(viewMetaData);//该方法加入的模型不能渲染烘焙        
         viewer.setBorderLineEnabled(false);
+        // CLOUD.GlobalData.Renderer = CLOUD.EnumRendererType.FULL;
         window.viewer = viewer;
         webUtils.viewer = viewer;
         modelHelper = new ModelHelper(viewer);
