@@ -40,7 +40,8 @@ function onSDKLoadSucceeded(viewMetaData) {
             renderer.domElement.addClass('canvasClass');
             window.myscene = scene;
             renderer.shadowMap.enabled = true;
-            viewer.enableShadow(true);
+            // viewer.enableShadow(true);
+            Glodon.Bimface.Light.DirectionalLight.enableShadow(true);
             viewer.setExposureShift(0.0);//曝光会影响色值
             renderer.alpha = true;
             renderer.setClearAlpha(0.08);

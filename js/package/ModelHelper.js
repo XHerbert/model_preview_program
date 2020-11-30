@@ -398,6 +398,20 @@ ModelHelper.prototype = Object.assign(ModelHelper.prototype, {
     },
 
     /**
+     * 开启或关闭捕获模式，支持空间精准拆分
+     * @param {Boolean} state 0：关闭 1：开启
+     */
+    switchSnapMode: function (state) {
+        let snapMode = new Glodon.Bimface.Viewer.SnapMode();
+        // 设置捕捉对象
+        var line = Glodon.Bimface.Viewer.SnapObject.Line;
+        var face = Glodon.Bimface.Viewer.SnapObject.Face;
+        snapMode.setSnap3DList([line, face]);
+        snapMode.setSnapConditions([]);
+        this.viewer.enableSnap(state);
+    },
+
+    /**
      * 执行模型行为列表
      * @param {Array} data 模型行为队列数据，从接口获取
      */

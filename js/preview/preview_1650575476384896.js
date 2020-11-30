@@ -32,7 +32,7 @@ function onSDKLoadSucceeded(viewMetaData) {
         viewer.setCameraAnimation(true);
         app.addView(BimfaceLoaderConfig.viewToken);
         viewer.setBorderLineEnabled(false);
-
+        viewer.enableGlowEffect(true);
         window.viewer = viewer;
         webUtils.viewer = window.viewer;
 
@@ -47,6 +47,9 @@ function onSDKLoadSucceeded(viewMetaData) {
             viewer.enableShadow(false);
             renderer.alpha = true;
             renderer.setClearAlpha(0.08);
+
+            // 设置捕获模式
+            modelHelper.switchSnapMode(true);
 
             //基础设置
             viewer.hideViewHouse();
@@ -145,6 +148,32 @@ function onSDKLoadSucceeded(viewMetaData) {
     }
 };
 
+
+function drop(event) {
+    event.preventDefault();
+    var data = event.dataTransfer.getData("Text");
+    //TODO:logic of effective to apply
+    //event.target.appendChild(document.getElementById(data));
+    let sel = viewer.getSelectedComponents();
+    if (!sel.length) {
+        alert("error");
+        return;
+    }
+    // viewer.overrideComponentsColorById(sel, new Glodon.Web.Graphics.Color('#FF0000'));
+    viewer.setGlowEffectById([sel], { type: "outline", color: new Glodon.Web.Graphics.Color(255, 255, 160, 1) });
+    viewer.render();
+    console.log(data);
+
+}
+
+function drag(ev) {
+    ev.dataTransfer.setData("Text", ev.target.id);
+}
+
+function allowDrop(ev) {
+    ev.preventDefault();
+}
+
 function onSDKLoadFailed(error) {
     console.log("Failed to load SDK!");
 };
@@ -174,6 +203,10 @@ function bindEvent() {
             }
         });
     }
+
+    document.getElementById('source').ondragstart = drag;
+    document.getElementById('view').ondrop = drop;
+    document.getElementById('view').ondragover = allowDrop;
 }
 
 function setCamera(viewer, callback) {
@@ -242,3 +275,4 @@ function setCamera(viewer, callback) {
 
 
 }
+
