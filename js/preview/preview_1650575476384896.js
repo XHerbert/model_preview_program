@@ -37,7 +37,7 @@ function onSDKLoadSucceeded(viewMetaData) {
         webUtils.viewer = window.viewer;
 
         viewer.addEventListener(Glodon.Bimface.Viewer.Viewer3DEvent.ViewAdded, function () {
-            eoManager = new Glodon.Bimface.Viewer.ExternalObjectManager(viewer);
+            requestAnimationFrame(() => eoManager = new Glodon.Bimface.Plugins.ExternalObject.ExternalObjectManager(viewer));
             let modelHelper = new ModelHelper(viewer);
             modelHelper.createAixsHelper(viewer);
             let scene = modelHelper.getScene(), camera = modelHelper.getPerspectiveCamera(), renderer = modelHelper.getRender();
@@ -48,8 +48,8 @@ function onSDKLoadSucceeded(viewMetaData) {
             renderer.alpha = true;
             renderer.setClearAlpha(0.08);
 
-            // 设置捕获模式
-            modelHelper.switchSnapMode(true);
+            // 设置捕获模式 有bug
+            // modelHelper.switchSnapMode(true);
 
             //基础设置
             viewer.hideViewHouse();

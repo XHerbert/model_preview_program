@@ -5,7 +5,7 @@
 import { WebUtils } from '../package/WebUtils.js'
 import { ModelHelper } from '../package/ModelHelper.js'
 
-var app, viewer, drawableContainer, eoManager;
+var app, viewer, drawableContainer, eoManager, lightMng, directionalLight;
 const INTEGRATE_FILE = 1;
 var BimfaceLoaderConfig = new BimfaceSDKLoaderConfig();
 var webUtils = new WebUtils();
@@ -13,7 +13,7 @@ var webUtils = new WebUtils();
 var direction = { x: 1, y: 1, z: 1 };
 var floorList = new Array();
 
-webUtils.getViewtoken(2002558939178368, INTEGRATE_FILE).then((token) => {
+webUtils.getViewtoken(2008809476646336, INTEGRATE_FILE).then((token) => {
   BimfaceLoaderConfig.viewToken = token;
   BimfaceSDKLoader.load(BimfaceLoaderConfig, onSDKLoadSucceeded, onSDKLoadFailed);
 });
@@ -31,19 +31,22 @@ function onSDKLoadSucceeded(viewMetaData) {
     CLOUD.GlobalData.Renderer = CLOUD.EnumRendererType.FULL;
 
     viewer.setBorderLineEnabled(false);
+    viewer.enableGlowEffect(true);
     window.viewer = viewer;
-
+    viewer.setExposureShift(-0.025);
     viewer.setBackgroundColor = webUtils.fromColor(53, 53, 66, 1);
     webUtils.viewer = window.viewer;
     viewer.addEventListener(Glodon.Bimface.Viewer.Viewer3DEvent.ViewAdded, function () {
-      eoManager = new Glodon.Bimface.Viewer.ExternalObjectManager(viewer);
+      requestAnimationFrame(() => eoManager = new Glodon.Bimface.Plugins.ExternalObject.ExternalObjectManager(viewer));
       let modelHelper = new ModelHelper(viewer);
-      //helper.createAixsHelper(viewer);
-      let scene = modelHelper.getScene(), camera = modelHelper.getPerspectiveCamera(), renderer = modelHelper.getRender();
-      renderer.domElement.addClass('canvasClass');
+
+      lightMng = viewer.getLightManager();
+      directionalLight = lightMng.getAllDirectionalLights()[0];
+      directionalLight.enableShadow(true);
       // window.myscene = scene;
       // renderer.shadowMap.enabled = true;
-      viewer.enableShadow(true);
+      // viewer.enableShadow(true);
+      // Glodon.Bimface.Light.DirectionalLight.enableShadow(true)
       // viewer.setExposureShift(0.0);//曝光会影响色值
       // renderer.alpha = true;
       // renderer.setClearAlpha(0.08);
@@ -66,7 +69,12 @@ function onSDKLoadSucceeded(viewMetaData) {
       ]);
       viewer.hideComponentsByObjectData([{ "specialty": "幕墙" }]);
 
+      viewer.addBlinkComponentsById(["2008010937968640.2494384", "2008010937968640.2425823"]);
+      viewer.setBlinkColor(new Glodon.Web.Graphics.Color("#FF0000", 0.8));
+      viewer.enableBlinkComponents(true);
+      viewer.setBlinkIntervalTime(1000);
 
+      // viewer.setGlowEffectById(["2008010937968640.2494384", "2008010937968640.2425823"], { type: "outline", color: new Glodon.Web.Graphics.Color(255, 0, 0, 1) });
       viewer.render();
 
       //相机视角
@@ -80,20 +88,11 @@ function onSDKLoadSucceeded(viewMetaData) {
             for (var i = 0; i < data.length; i++) {
               floorList.push(data[i].id);
             }
-            viewer.setFloorExplosion(3, floorList, direction);
-            //TODO:将楼板下移
-            // let name = 'F1F1';
-            // let external = eoManager.convert("1999669228873920.2840410", true);
-            // window._external_ = external;
-            // console.log(external);
-            // window._name_ = name;
-            // window._eom_ = eoManager;
-            // eoManager.addObject(name, external, 1999669228873920);
-            // eoManager.translate("1999669228873920.2840410", { x: 0, y: 0, z: -5500 });
+            viewer.setFloorExplosion(6, floorList, direction);
             viewer.render();
           });
         } else {
-          viewer.setFloorExplosion(3, floorList, direction);
+          viewer.setFloorExplosion(6, floorList, direction);
         }
       });
 
@@ -150,19 +149,19 @@ function setCamera(viewer, callback) {
   let target = {
     "name": "persp",
     "position": {
-      "x": -153857.86815328503,
-      "y": -231241.75294860924,
-      "z": 199506.17129807232
+      "x": -71972.27135322015,
+      "y": -96771.65447274146,
+      "z": 100865.67389146521
     },
     "target": {
-      "x": 161588.7918140016,
-      "y": 82147.78838960828,
-      "z": 10918.20521958532
+      "x": 243474.37793948737,
+      "y": 216617.8762647885,
+      "z": -87722.28580774585
     },
     "up": {
-      "x": 0.2769967983958842,
-      "y": 0.27518643248095714,
-      "z": 0.9206221814929474
+      "x": 0.27699679842282837,
+      "y": 0.2751864324773532,
+      "z": 0.9206221814859178
     },
     "fov": 45,
     "zoom": 1,
