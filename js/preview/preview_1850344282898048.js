@@ -30,6 +30,7 @@ function onSDKLoadSucceeded(viewMetaData) {
         var modelHelper = new ModelHelper(viewer);
         window.viewer = viewer;
         webUtil.viewer = window.viewer;
+        viewer.enableGlowEffect(true);
         viewer.addEventListener(Glodon.Bimface.Viewer.Viewer3DEvent.ViewAdded, function () {
             //helper.createAixsHelper(viewer);
             let scene = modelHelper.getScene(), camera = modelHelper.getPerspectiveCamera(), renderer = modelHelper.getRender();
@@ -43,7 +44,7 @@ function onSDKLoadSucceeded(viewMetaData) {
             // 万达制冷机房
             initScene(scene, viewer);
             initModel(viewer);
-
+            viewer.setGlowEffectById(["1850332718385088.5299047", "1850332718385088.4491258"], { type: "outline", color: new Glodon.Web.Graphics.Color(255, 0, 0, 1) });
             viewer.addEventListener(Glodon.Bimface.Viewer.Viewer3DEvent.MouseClicked, function (e) {
                 if (!e.objectId) return;
                 if (window.bim.queryCondition) {
@@ -99,6 +100,7 @@ function bindEvent() {
             "version": 1,
             "coordinateSystem": "world"
         });
+        viewer.setGlowEffectById(["1850332718385088.5299047", "1850332718385088.4491258"], { type: "outline", color: new Glodon.Web.Graphics.Color(255, 0, 0, 1), spread: 2 });
         viewer.render();
     });
 
@@ -114,6 +116,7 @@ function bindEvent() {
         viewer.overrideComponentsColorById(["1850332718385088.4900920"], new Glodon.Web.Graphics.Color(113, 162, 160, 1));
         viewer.overrideComponentsColorById(["1850332718385088.5300592"], new Glodon.Web.Graphics.Color(113, 162, 160, 1));
         viewer.overrideComponentsColorById(["1850332718385088.4901277"], new Glodon.Web.Graphics.Color(157, 14, 70, 1));//热水泵
+        viewer.setGlowEffectById(["1850332718385088.5299047", "1850332718385088.4491258"], { type: "body", color: new Glodon.Web.Graphics.Color(255, 0, 0, 1) });
         viewer.render();
     });
 

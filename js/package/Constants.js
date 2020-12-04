@@ -10,6 +10,20 @@
 var Constant = {
 
     /**
+     * 电子围墙动画方向
+     */
+    direction: {
+        Normal: "Normal",
+        Tangent: "Tangent"
+    },
+    /**
+     * 火焰类型
+     */
+    fireType: {
+        Fire: "Fire",
+        Smoke: "Smoke"
+    },
+    /**
      * 与bimface对应的方法名称
      */
     method: {

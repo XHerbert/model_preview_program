@@ -266,13 +266,5 @@ function setCamera(viewer, callback) {
             })
         }, 800);
     });
-
-
-
-
-
-
-
-
 }
 
