@@ -119,6 +119,73 @@ EffectLibrary.prototype = Object.assign(EffectLibrary.prototype, {
         // 构造曲线动画对象
         let curveAnimation = new Glodon.Bimface.Plugins.Animation.CurveAnimation(curveAnimationConfig);
         curveAnimation.play();
+    },
+
+    /**
+     * 立体锚点，指示建筑位置
+     * @param {Object} position 锚点位置 
+     * @param {Number} during 设置棱锥锚点悬浮动画循环一次的时间，以毫秒为单位
+     * @param {Number} size 设置棱锥锚点的大小
+     */
+    prismPointEffect: function (position, during, size) {
+        var anchorMngConfig = new Glodon.Bimface.Plugins.Anchor.AnchorManagerConfig();
+        anchorMngConfig.viewer = this.viewer;
+        var anchorMng = new Glodon.Bimface.Plugins.Anchor.AnchorManager(anchorMngConfig);
+        var prismPointConfig = new Glodon.Bimface.Plugins.Anchor.PrismPointConfig();
+        prismPointConfig.position = position;
+        prismPointConfig.duration = during;
+        prismPointConfig.size = size;
+        let prismPoint = new Glodon.Bimface.Plugins.Anchor.PrismPoint(prismPointConfig);
+        anchorMng.addItem(prismPoint);
+    },
+
+    /**
+     * 环状扫描效果
+     * @param {Object} originPosition 起始中心点坐标 
+     * @param {Color} color 颜色 
+     * @param {Number} during 持续时间
+     * @param {Number} radius 半径
+     * @param {Number} progressive 颜色衰减 
+     */
+    ringScanEffect: function (originPosition, color, during, radius, progressive) {
+        // 构造环状扫描效果配置项
+        let ringScanEffectConfig = new Glodon.Bimface.Plugins.Animation.RingScanEffectConfig();
+        // 配置Viewer对象、颜色、持续时间、位置、半径、衰减力度等参数
+        ringScanEffectConfig.viewer = this.viewer;
+        ringScanEffectConfig.color = color;
+        ringScanEffectConfig.duration = during || 1500;
+        ringScanEffectConfig.originPosition = originPosition;
+        ringScanEffectConfig.radius = radius;
+        ringScanEffectConfig.progressive = progressive;
+        // 构造环状扫描效果对象
+        let ringScanEffect = new Glodon.Bimface.Plugins.Animation.RingScanEffect(ringScanEffectConfig);
+        ringScanEffect.show();
+    },
+
+    /**
+     * 扇形扫描效果
+     * @param {Object} originPosition 起始中心点坐标 
+     * @param {Color} backgroundColor 扇形背景色
+     * @param {Color} color 扇形前景色
+     * @param {Number} duration 持续时间
+     * @param {Number} radius 半径
+     */
+    fanScanEfect: function (originPosition, backgroundColor, color, duration, radius) {
+
+        // 构造扇形扫描效果配置项
+        let fanScanEffectConfig = new Glodon.Bimface.Plugins.Animation.FanScanEffectConfig();
+        // 配置Viewer对象、背景颜色、扫描颜色、持续时间、扇形角度、位置、扫描半径等参数
+        fanScanEffectConfig.viewer = this.viewer;
+        fanScanEffectConfig.backgroundColor = backgroundColor;
+        fanScanEffectConfig.color = color;
+        fanScanEffectConfig.duration = duration;
+        fanScanEffectConfig.fanAngle = Math.PI;
+        fanScanEffectConfig.originPosition = originPosition;
+        fanScanEffectConfig.radius = radius;
+        // 构造扇形扫描效果对象
+        let fanScanEffect = new Glodon.Bimface.Plugins.Animation.FanScanEffect(fanScanEffectConfig);
+        fanScanEffect.show();
+
     }
 
 });

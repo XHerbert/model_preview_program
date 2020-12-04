@@ -43,29 +43,7 @@ function onSDKLoadSucceeded(viewMetaData) {
                 setCamera(viewer, createWallEffect);
             });
             let modelHelper = new ModelHelper(viewer);
-            //helper.createAixsHelper(viewer);
-
-
-
-
-            // viewer.enableShadow(true);
-            // lightMng = viewer.getLightManager();
-            // directionalLight = lightMng.getAllDirectionalLights()[0];
-            // directionalLight.enableShadow(true);
-            // viewer.setExposureShift(0.0);//曝光会影响色值
-            // renderer.alpha = true;
-            // renderer.setClearAlpha(0.08);
-
-            // 创建标签容器
-            // var drawableConfig = new Glodon.Bimface.Plugins.Drawable.DrawableContainerConfig();
-            // drawableConfig.viewer = viewer;
-            // drawableContainer = new Glodon.Bimface.Plugins.Drawable.DrawableContainer(drawableConfig);
             webUtils.initModel();
-
-            // viewer.overrideComponentsColorByObjectData([{ "categoryId": "-2000032" }], webUtils.fromColor(17, 38, 66, 1));
-
-
-
 
 
             //相机视角
@@ -232,9 +210,12 @@ function createWallEffect() {
     let centerPoint = { x: 127558.6904568029, y: 322181.5967759746, z: 29999.99707529418 };
     let slavePoints = [{ x: 428705.3023207032, y: 246105.07969800566, z: 19999.999352279603 }, { x: 8198.580026423226, y: 147686.44213394247, z: 25099.999187109785 }, { x: -355960.98944854754, y: 145934.92260080954, z: 39699.998714272195 }];
 
-    effectLibrary.electricWallEffect(Constant.direction.Normal, false, 3500, 40000, path, new Glodon.Web.Graphics.Color(255, 12, 12, 1));
+    //effectLibrary.electricWallEffect(Constant.direction.Normal, false, 3500, 40000, path, new Glodon.Web.Graphics.Color(255, 12, 12, 1));
     effectLibrary.fireEffect(null, 8, null);
     effectLibrary.flyLines(eoManager, centerPoint, slavePoints, new Glodon.Web.Graphics.Color(217, 28, 13, 1.0), 18);
+    //effectLibrary.prismPointEffect({ x: 266545.96303432016, y: 321068.30465378816, z: 40699.99871427381 }, 1500, 13500);
+    // effectLibrary.ringScanEffect({ x: -123481.66920662453, y: 444563.99375532323, z: 20.14495784748721 }, new Glodon.Web.Graphics.Color(217, 18, 183, 1), 1500, 38000, 8);
+    effectLibrary.fanScanEfect({ x: 128481.37014930286, y: -1995.208487895918, z: 49 }, new Glodon.Web.Graphics.Color(0, 0, 0, 0.05), new Glodon.Web.Graphics.Color(17, 218, 183, 0.8), 1500, 20000);
 }
 
 function bindEvent() {
