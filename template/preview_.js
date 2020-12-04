@@ -5,7 +5,7 @@
 import { WebUtils } from '../package/WebUtils.js'
 import { ModelHelper } from '../package/ModelHelper.js'
 
-var app, viewer, drawableContainer;
+var app, viewer, drawableContainer, lightMng, directionalLight;;
 const INTEGRATE_FILE = 1;
 var BimfaceLoaderConfig = new BimfaceSDKLoaderConfig();
 var webUtils = new WebUtils();
@@ -41,7 +41,9 @@ function onSDKLoadSucceeded(viewMetaData) {
             window.myscene = scene;
             renderer.shadowMap.enabled = true;
             // viewer.enableShadow(true);
-            Glodon.Bimface.Light.DirectionalLight.enableShadow(true);
+            lightMng = viewer.getLightManager();
+            directionalLight = lightMng.getAllDirectionalLights()[0];
+            directionalLight.enableShadow(true);
             viewer.setExposureShift(0.0);//曝光会影响色值
             renderer.alpha = true;
             renderer.setClearAlpha(0.08);
