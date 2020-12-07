@@ -8,7 +8,7 @@ import { ModelHelper } from '../package/ModelHelper.js'
 import { RoomUtils } from '../package/RoomUtils.js'
 import { MathLibrary } from '../package/MathLibrary.js';
 
-var app, viewer, maxX, maxY, minX, minY, objects = [], pointCollection = [], eoManager, newBoundary;
+var app, viewer, roomUtils, modelHelper, objects = [], combineAreas = [], pointCollection = [], allRooms = [], eoManager, newBoundary;
 const SINGLE_FILE = 0;
 const vertical = 1;
 const horizontal = 2;
@@ -18,6 +18,7 @@ var math = new MathLibrary();
 
 webUtils.getViewtoken(1650575476384896, SINGLE_FILE).then((token) => {
     BimfaceLoaderConfig.viewToken = token;
+    BimfaceLoaderConfig.version = "3.6.108";
     BimfaceSDKLoader.load(BimfaceLoaderConfig, onSDKLoadSucceeded, onSDKLoadFailed);
 });
 
@@ -35,27 +36,49 @@ function onSDKLoadSucceeded(viewMetaData) {
         viewer.enableGlowEffect(true);
         window.viewer = viewer;
         webUtils.viewer = window.viewer;
+        window._combineAreas = combineAreas;
 
         viewer.addEventListener(Glodon.Bimface.Viewer.Viewer3DEvent.ViewAdded, function () {
-            requestAnimationFrame(() => eoManager = new Glodon.Bimface.Plugins.ExternalObject.ExternalObjectManager(viewer));
-            let modelHelper = new ModelHelper(viewer);
-            modelHelper.createAixsHelper(viewer);
-            let scene = modelHelper.getScene(), camera = modelHelper.getPerspectiveCamera(), renderer = modelHelper.getRender();
+            requestAnimationFrame(() => {
+
+            });
+            modelHelper = new ModelHelper(viewer);
+            // modelHelper.createAixsHelper(viewer);
+            let renderer = modelHelper.getRender();
             renderer.domElement.addClass('canvasClass');
-            window.scene = scene;
-            renderer.shadowMap.enabled = true;
-            viewer.enableShadow(false);
-            renderer.alpha = true;
-            renderer.setClearAlpha(0.08);
+            // window.scene = scene;
+            // renderer.shadowMap.enabled = true;
+            // viewer.enableShadow(false);
+            // renderer.alpha = true;
+            // renderer.setClearAlpha(0.08);
 
             // 设置捕获模式 有bug
-            // modelHelper.switchSnapMode(true);
+            modelHelper.switchSnapMode(true);
 
             //基础设置
             viewer.hideViewHouse();
             document.getElementsByClassName('bf-toolbar bf-toolbar-bottom')[0].style.display = 'none';
             document.getElementsByClassName('gld-bf-tree')[0].style.display = 'none';
             document.getElementById('open-button').style.display = 'block';
+
+
+            //绘制自带房间  TODO:缓存
+            viewer.getAreas((data) => {
+                let font_path = "../../fonts/SS_Shui_DiTi_Regular.json";
+                let roomlist = data[0].rooms;
+                for (let h = 0, len = roomlist.length; h < len; h++) {
+                    roomlist[h].boundingBox = { max: roomlist[h].maxPt, min: roomlist[h].minPt };
+                    if (roomlist[h].id == "220741" || roomlist[h].id == "220738" || roomlist[h].id == "220739") {
+                        continue;
+                    }
+                    // console.log(roomlist[h]);
+                    viewer.createRoom(roomlist[h].boundary, 5500, roomlist[h].id, webUtils.fromHexColor("#708090", 0.45), webUtils.fromHexColor("#778899", 1));
+
+                }
+                modelHelper.drawText(viewer, font_path, webUtils.fromHexColor("#DD0000"), roomlist, 500, 5550);
+            });
+
+
 
             //创建房间
             pointCollection = [];
@@ -66,11 +89,11 @@ function onSDKLoadSucceeded(viewMetaData) {
             let areaList = [];
             areaList.push(leftArea);
             areaList.push(rightArea);
-            newBoundary = roomUtils.mergeBoundaryPipeline(areaList, "origin");
+            // newBoundary = roomUtils.mergeBoundaryPipeline(areaList, "origin");
 
-            viewer.createRoom({ "version": "2.0", "loops": [[[{ "z": 0.0, "y": 8899.9999999999982, "x": 100.00000000001437 }, { "z": 0.0, "y": 99.99999999999784, "x": 100.00000000000017 }], [{ "z": 0.0, "y": 99.99999999999784, "x": 100.00000000000017 }, { "z": 0.0, "y": 99.999999999977135, "x": 6506.1362682022218 }], [{ "z": 0.0, "y": 99.999999999977135, "x": 6506.1362682022218 }, { "z": 0.0, "y": 8899.9999999999764, "x": 6506.1362682022354 }], [{ "z": 0.0, "y": 8899.9999999999764, "x": 6506.1362682022354 }, { "z": 0.0, "y": 8899.9999999999873, "x": 3606.1362682022323 }], [{ "z": 0.0, "y": 8899.9999999999873, "x": 3606.1362682022323 }, { "z": 0.0, "y": 8899.9999999999982, "x": 100.00000000001462 }]]] }, 3300, "1151511");
-            viewer.createRoom({ "version": "2.0", "loops": [[[{ "z": 0.0, "y": 99.999999999976481, "x": 6706.1362682022218 }, { "z": 0.0, "y": 99.999999999955818, "x": 13106.136268202223 }], [{ "z": 0.0, "y": 99.999999999955818, "x": 13106.136268202223 }, { "z": 0.0, "y": 8899.9999999999563, "x": 13106.136268202239 }], [{ "z": 0.0, "y": 8899.9999999999563, "x": 13106.136268202239 }, { "z": 0.0, "y": 8899.9999999999764, "x": 6706.1362682022354 }], [{ "z": 0.0, "y": 8899.9999999999764, "x": 6706.1362682022354 }, { "z": 0.0, "y": 99.999999999977263, "x": 6706.1362682022218 }]]] }, 3300, "vdfvf");
-            viewer.createRoom({ "version": "2.0", "loops": [[[{ "z": 0.0, "y": 99.999999999955165, "x": 13306.136268202221 }, { "z": 0.0, "y": 99.999999999934474, "x": 19706.136268202226 }], [{ "z": 0.0, "y": 99.999999999934474, "x": 19706.136268202226 }, { "z": 0.0, "y": 8899.9999999999345, "x": 19706.136268202241 }], [{ "z": 0.0, "y": 8899.9999999999345, "x": 19706.136268202241 }, { "z": 0.0, "y": 8899.9999999999563, "x": 13306.136268202235 }], [{ "z": 0.0, "y": 8899.9999999999563, "x": 13306.136268202235 }, { "z": 0.0, "y": 99.9999999999556, "x": 13306.136268202221 }]]] }, 3300, "ssdsds");
+            // viewer.createRoom({ "version": "2.0", "loops": [[[{ "z": 0.0, "y": 8899.9999999999982, "x": 100.00000000001437 }, { "z": 0.0, "y": 99.99999999999784, "x": 100.00000000000017 }], [{ "z": 0.0, "y": 99.99999999999784, "x": 100.00000000000017 }, { "z": 0.0, "y": 99.999999999977135, "x": 6506.1362682022218 }], [{ "z": 0.0, "y": 99.999999999977135, "x": 6506.1362682022218 }, { "z": 0.0, "y": 8899.9999999999764, "x": 6506.1362682022354 }], [{ "z": 0.0, "y": 8899.9999999999764, "x": 6506.1362682022354 }, { "z": 0.0, "y": 8899.9999999999873, "x": 3606.1362682022323 }], [{ "z": 0.0, "y": 8899.9999999999873, "x": 3606.1362682022323 }, { "z": 0.0, "y": 8899.9999999999982, "x": 100.00000000001462 }]]] }, 3300, "1151511");
+            // viewer.createRoom({ "version": "2.0", "loops": [[[{ "z": 0.0, "y": 99.999999999976481, "x": 6706.1362682022218 }, { "z": 0.0, "y": 99.999999999955818, "x": 13106.136268202223 }], [{ "z": 0.0, "y": 99.999999999955818, "x": 13106.136268202223 }, { "z": 0.0, "y": 8899.9999999999563, "x": 13106.136268202239 }], [{ "z": 0.0, "y": 8899.9999999999563, "x": 13106.136268202239 }, { "z": 0.0, "y": 8899.9999999999764, "x": 6706.1362682022354 }], [{ "z": 0.0, "y": 8899.9999999999764, "x": 6706.1362682022354 }, { "z": 0.0, "y": 99.999999999977263, "x": 6706.1362682022218 }]]] }, 3300, "vdfvf");
+            // viewer.createRoom({ "version": "2.0", "loops": [[[{ "z": 0.0, "y": 99.999999999955165, "x": 13306.136268202221 }, { "z": 0.0, "y": 99.999999999934474, "x": 19706.136268202226 }], [{ "z": 0.0, "y": 99.999999999934474, "x": 19706.136268202226 }, { "z": 0.0, "y": 8899.9999999999345, "x": 19706.136268202241 }], [{ "z": 0.0, "y": 8899.9999999999345, "x": 19706.136268202241 }, { "z": 0.0, "y": 8899.9999999999563, "x": 13306.136268202235 }], [{ "z": 0.0, "y": 8899.9999999999563, "x": 13306.136268202235 }, { "z": 0.0, "y": 99.9999999999556, "x": 13306.136268202221 }]]] }, 3300, "ssdsds");
             viewer.render();
 
             var roomUtils2 = new RoomUtils(viewer);
@@ -78,17 +101,28 @@ function onSDKLoadSucceeded(viewMetaData) {
             areaLists.push({ "version": "2.0", "loops": [[[{ "z": 0.0, "y": 8899.9999999999982, "x": 100.00000000001437 }, { "z": 0.0, "y": 99.99999999999784, "x": 100.00000000000017 }], [{ "z": 0.0, "y": 99.99999999999784, "x": 100.00000000000017 }, { "z": 0.0, "y": 99.999999999977135, "x": 6506.1362682022218 }], [{ "z": 0.0, "y": 99.999999999977135, "x": 6506.1362682022218 }, { "z": 0.0, "y": 8899.9999999999764, "x": 6506.1362682022354 }], [{ "z": 0.0, "y": 8899.9999999999764, "x": 6506.1362682022354 }, { "z": 0.0, "y": 8899.9999999999873, "x": 3606.1362682022323 }], [{ "z": 0.0, "y": 8899.9999999999873, "x": 3606.1362682022323 }, { "z": 0.0, "y": 8899.9999999999982, "x": 100.00000000001462 }]]] });
             areaLists.push({ "version": "2.0", "loops": [[[{ "z": 0.0, "y": 99.999999999976481, "x": 6706.1362682022218 }, { "z": 0.0, "y": 99.999999999955818, "x": 13106.136268202223 }], [{ "z": 0.0, "y": 99.999999999955818, "x": 13106.136268202223 }, { "z": 0.0, "y": 8899.9999999999563, "x": 13106.136268202239 }], [{ "z": 0.0, "y": 8899.9999999999563, "x": 13106.136268202239 }, { "z": 0.0, "y": 8899.9999999999764, "x": 6706.1362682022354 }], [{ "z": 0.0, "y": 8899.9999999999764, "x": 6706.1362682022354 }, { "z": 0.0, "y": 99.999999999977263, "x": 6706.1362682022218 }]]] });
             areaLists.push({ "version": "2.0", "loops": [[[{ "z": 0.0, "y": 99.999999999955165, "x": 13306.136268202221 }, { "z": 0.0, "y": 99.999999999934474, "x": 19706.136268202226 }], [{ "z": 0.0, "y": 99.999999999934474, "x": 19706.136268202226 }, { "z": 0.0, "y": 8899.9999999999345, "x": 19706.136268202241 }], [{ "z": 0.0, "y": 8899.9999999999345, "x": 19706.136268202241 }, { "z": 0.0, "y": 8899.9999999999563, "x": 13306.136268202235 }], [{ "z": 0.0, "y": 8899.9999999999563, "x": 13306.136268202235 }, { "z": 0.0, "y": 99.9999999999556, "x": 13306.136268202221 }]]] });
-            roomUtils2.mergeBoundaryPipeline(areaLists);
+            // roomUtils2.mergeBoundaryPipeline(areaLists);
             viewer.render();
 
 
             let pointArray = [];
             let lineName;
             viewer.addEventListener(Glodon.Bimface.Viewer.Viewer3DEvent.MouseClicked, function (e) {
-                if (!e.objectId) return;
+                if (!e.objectId) {
+                    objects = [];
+                    combineAreas = [];
+                    return;
+                }
                 //测试禁用选中
                 //viewer.removeSelectedId([e.objectId]);
                 //viewer.render();
+                objects.push(e.objectId);
+                viewer.setSelectedComponentsById(objects);
+                modelHelper.getBoundaryData(e.objectId, (boundary) => {
+                    let json_boundary = JSON.parse(boundary);
+                    combineAreas.push(json_boundary);
+                    newBoundary = json_boundary;
+                });
 
                 if (window.bim.queryCondition) {
                     let condition = viewer.getObjectDataById(e.objectId);
@@ -115,10 +149,10 @@ function onSDKLoadSucceeded(viewMetaData) {
                 if (window.bim.drawRooms) {
                     pointArray.push(new THREE.Vector3(e.worldPosition.x, e.worldPosition.y, e.worldPosition.z));
                     if (pointArray.length == 2) {
-                        viewer.hideRoomsById(["origin"]);
+                        viewer.hideRoomsById(objects);
                         viewer.render();
                         if (lineName) {
-                            eoManager.removeById(eoManager.getObjectIdByName(lineName));
+                            //eoManager.removeById(eoManager.getObjectIdByName(lineName));
                         }
                         try {
                             //计算直线方程
@@ -128,12 +162,14 @@ function onSDKLoadSucceeded(viewMetaData) {
                             let crossPoint = math.findCrossPoint(newBoundary, pointArray, e.worldPosition.z);
 
                             //绘制切割线线段
-                            lineName = modelHelper.drawLine(crossPoint.pointCollection, 10, "#FFFFFF", 1);
+                            //lineName = modelHelper.drawLine(crossPoint.pointCollection, 5, "#FFFFFF", 1);
 
                             //绘制空间
-                            viewer.createRoom(math.buildSplitAreas(crossPoint.crossObjectArray)[0], e.worldPosition.z, "first", webUtils.fromColor(255, 0, 0, 0.5), webUtils.fromColor(255, 0, 0, 1));
-                            viewer.createRoom(math.buildSplitAreas(crossPoint.crossObjectArray)[1], e.worldPosition.z, "second", webUtils.fromColor(0, 255, 0, 0.5), webUtils.fromColor(0, 255, 0, 1));
+                            viewer.createRoom(math.buildSplitAreas(crossPoint.crossObjectArray)[0], e.worldPosition.z, webUtils.guid(), webUtils.fromColor(244, 67, 54, 0.8), webUtils.fromColor(255, 0, 0, 1));
+                            viewer.createRoom(math.buildSplitAreas(crossPoint.crossObjectArray)[1], e.worldPosition.z, webUtils.guid(), webUtils.fromColor(0, 150, 136, 0.8), webUtils.fromColor(0, 255, 0, 1));
                             pointArray = [];
+                            objects = [];
+                            combineAreas = [];
                         } catch (error) {
                             console.log(error);
                             pointArray = [];
@@ -181,27 +217,12 @@ function onSDKLoadFailed(error) {
 
 function bindEvent() {
     document.getElementById("horizon").onclick = function () {
-        let keyword = '房间 1';
-        viewer.getAreas((d) => {
-            let b = d[0].rooms;
-            for (let h = 0, len = d[0].rooms.length; h < len; h++) {
-                if (d[0].rooms[h].name.indexOf(keyword) > -1) {
-                    console.log(d[0].rooms[h]);
-                }
-            }
-        });
-    }
-
-    document.getElementById("vertial").onclick = function () {
-        let id = "220730";
-        viewer.getAreas((d) => {
-            let b = d[0].rooms;
-            for (let h = 0, len = d[0].rooms.length; h < len; h++) {
-                if (d[0].rooms[h].id === id) {
-                    console.log(d[0].rooms[h]);
-                }
-            }
-        });
+        var roomUtils2 = new RoomUtils(viewer);
+        roomUtils2.mergeBoundaryPipeline(combineAreas);
+        viewer.hideAreasById(objects);
+        combineAreas = [];
+        objects = [];
+        viewer.render();
     }
 
     document.getElementById('source').ondragstart = drag;

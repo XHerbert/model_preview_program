@@ -170,33 +170,36 @@ ModelHelper.prototype = Object.assign(ModelHelper.prototype, {
      * @param {Object} viewer viewer对象 
      * @param {String} fontPath 字体路径
      * @param {Color} color 文本颜色
-     * @param {Array} textArray 文本
+     * @param {Array} textArray 空间对象
      * @param {Number} fontSize 文本大小
+     * @param {Number} height 文本高度
      * @param {Number} opacity 文本透明度
      * @param {Number} rotate 旋转角度
      * @param {Boolean} wireframe 是否只显示边线
      */
-    drawText: function (viewer, fontPath, color, textArray, fontSize, opacity, rotate, wireframe) {
+    drawText: function (viewer, fontPath, color, textArray, fontSize, height, opacity, rotate, wireframe) {
         if (!textArray) {
             console.warn('textArray can not empty!');
             return;
         }
 
         var loader = new THREE.FontLoader();
+        var that = this;
+        that.eoManager = new Glodon.Bimface.Plugins.ExternalObject.ExternalObjectManager(viewer);
         loader.load(fontPath, function (font) {
 
             var xMid = 0;
             let fontMaterial = new THREE.MeshBasicMaterial({ color: color, transparent: true, wireframe: wireframe, opacity: opacity, side: THREE.DoubleSide });
 
-            for (let m = 0, len = this.textArray.length; m < len; m++) {
+            for (let m = 0, len = textArray.length; m < len; m++) {
 
-                let item = this.textArray[m];
+                let item = textArray[m];
                 if (!item.boundingBox) continue;
 
-                let bounding = JSON.parse(item.boundingBox);
-                this.fontSize = ((bounding.max.x - bounding.min.x) * 0.08) > fontSize ? fontSize : ((bounding.max.x - bounding.min.x) * 0.08);
+                let bounding = (item.boundingBox);
+                fontSize = ((bounding.max.x - bounding.min.x) * 0.08) > fontSize ? fontSize : ((bounding.max.x - bounding.min.x) * 0.08);
 
-                let shapes = font.generateShapes(item.name, this.fontSize);
+                let shapes = font.generateShapes(item.name, fontSize);
                 let geometry = new THREE.ShapeGeometry(shapes);
                 geometry.computeBoundingBox();
 
@@ -205,15 +208,15 @@ ModelHelper.prototype = Object.assign(ModelHelper.prototype, {
                 let textShape = new THREE.BufferGeometry();
 
                 textShape.fromGeometry(geometry);
-                text = new THREE.Mesh(textShape, fontMaterial);
+                let text = new THREE.Mesh(textShape, fontMaterial);
 
                 let centerX = (bounding.max.x + bounding.min.x) / 2;
                 let centerY = (bounding.max.y + bounding.min.y) / 2;
 
                 text.position.x = centerX;
                 text.position.y = centerY;
-                text.position.z = bounding.max.z + 5;
-                viewer.addExternalObject(item.name, text);
+                text.position.z = height;
+                that.eoManager.addObject(item.name, text);
             }
             viewer.render();
         });
@@ -383,6 +386,21 @@ ModelHelper.prototype = Object.assign(ModelHelper.prototype, {
                     break;
                 }
             }
+        });
+    },
+
+    getBoundaryData: function (id, callback) {
+        let boundary_data = '';
+        this.viewer.getAreas((d) => {
+            let rooms = d[0].rooms;
+            for (let h = 0, len = rooms.length; h < len; h++) {
+                if (rooms[h].id === id) {
+                    boundary_data = rooms[h];
+                    console.log(boundary_data);
+                    break;
+                }
+            }
+            callback(boundary_data.boundary);
         });
     },
 
