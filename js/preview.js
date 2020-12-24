@@ -6,6 +6,7 @@ var app, viewer, curve, modelHelper;
 var webUtils = new WebUtils();
 var BimfaceLoaderConfig = new BimfaceSDKLoaderConfig();
 BimfaceLoaderConfig.viewToken = webUtils.getURLParameter('viewToken');
+var color = webUtils.getURLParameter('color');
 
 BimfaceSDKLoader.load(BimfaceLoaderConfig, onSDKLoadSucceeded, onSDKLoadFailed);
 function onSDKLoadSucceeded(viewMetaData) {
@@ -22,12 +23,17 @@ function onSDKLoadSucceeded(viewMetaData) {
         app.addView(BimfaceLoaderConfig.viewToken);
         //viewer.addModel(viewMetaData);//该方法加入的模型不能渲染烘焙        
         viewer.setBorderLineEnabled(false);
-        // CLOUD.GlobalData.Renderer = CLOUD.EnumRendererType.FULL;
+        CLOUD.GlobalData.Renderer = CLOUD.EnumRendererType.FULL;
         window.viewer = viewer;
         webUtils.viewer = viewer;
         modelHelper = new ModelHelper(viewer);
         viewer.addEventListener(Glodon.Bimface.Viewer.Viewer3DEvent.ViewAdded, function () {
             webUtils.initModel();
+
+            if (color && color.length) {
+                viewer.overrideComponentsColorByObjectData([], webUtils.fromHexColor('#' + color));
+                viewer.overrideComponentsColorById(["2149564"], webUtils.fromHexColor('#FF0000'));
+            }
 
             viewer.addEventListener(Glodon.Bimface.Viewer.Viewer3DEvent.MouseClicked, function (e) {
 

@@ -9,11 +9,9 @@ var app, viewer, drawableContainer, lightMng, directionalLight;;
 const INTEGRATE_FILE = 1;
 var BimfaceLoaderConfig = new BimfaceSDKLoaderConfig();
 var webUtils = new WebUtils();
-var hidetoken;
 
 webUtils.getViewtoken(1940267310858912, INTEGRATE_FILE).then((token) => {
     BimfaceLoaderConfig.viewToken = token;
-    hidetoken = token;
     BimfaceSDKLoader.load(BimfaceLoaderConfig, onSDKLoadSucceeded, onSDKLoadFailed);
 });
 

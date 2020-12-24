@@ -12,8 +12,11 @@ var webUtils = new WebUtils();
 // 定义楼层爆炸的方向，缺省值为{x: 0, y: 0, z: 1}
 var direction = { x: 1, y: 1, z: 1 };
 var floorList = new Array();
+var all = webUtils.getURLParameter('all');
+var _file = all == "1" ? 2013928559494592 : 2008809476646336;
+console.log(all);
 
-webUtils.getViewtoken(2008809476646336, INTEGRATE_FILE).then((token) => {
+webUtils.getViewtoken(2019386536298016, INTEGRATE_FILE).then((token) => {
   BimfaceLoaderConfig.viewToken = token;
   BimfaceSDKLoader.load(BimfaceLoaderConfig, onSDKLoadSucceeded, onSDKLoadFailed);
 });
@@ -57,22 +60,29 @@ function onSDKLoadSucceeded(viewMetaData) {
       // drawableContainer = new Glodon.Bimface.Plugins.Drawable.DrawableContainer(drawableConfig);
       webUtils.initModel();
 
-      viewer.hideAllComponents();
-      viewer.overrideComponentsColorByObjectData([{ "categoryId": "-2000011" }], new Glodon.Web.Graphics.Color('#A7A7A7'));
-      viewer.showComponentsByObjectData([
-        { "categoryId": "-2000011" },//墙
-        { "categoryId": "-2000151" },//常规模型
-        { "categoryId": "-2001140" },//机械设备
-        { "categoryId": "-2000032" },//楼板
-        // { "categoryId": "-2000023" },//门
-        // { "categoryId": "-2000120" }//楼梯
-      ]);
-      viewer.hideComponentsByObjectData([{ "specialty": "幕墙" }]);
+      // viewer.hideAllComponents();
 
-      viewer.addBlinkComponentsById(["2008010937968640.2494384", "2008010937968640.2425823"]);
-      viewer.setBlinkColor(new Glodon.Web.Graphics.Color("#FF0000", 0.8));
-      viewer.enableBlinkComponents(true);
-      viewer.setBlinkIntervalTime(1000);
+      // viewer.overrideComponentsColorByObjectData([{ "categoryId": "-2000011" }, { "categoryId": "-2001330" }, { "categoryId": "-2000023" }], new Glodon.Web.Graphics.Color('#7396c3'));
+      viewer.overrideComponentsColorByObjectData([{ "categoryId": "-2000011" }, { "categoryId": "-2000023" }], new Glodon.Web.Graphics.Color('#d7d7d7'));
+      viewer.overrideComponentsColorByObjectData([{ "categoryId": "-2000032" }], new Glodon.Web.Graphics.Color('#8a8a8a'));//#6483ac
+      // viewer.overrideComponentsColorByObjectData([{ "categoryId": "-2000032" }], new Glodon.Web.Graphics.Color('#7396c3'));
+
+
+      // viewer.showComponentsByObjectData([
+      //   { "categoryId": "-2000011" },//墙
+      //   { "categoryId": "-2000151" },//常规模型
+      //   { "categoryId": "-2001140" },//机械设备
+      //   { "categoryId": "-2000032" },//楼板
+      //   // { "categoryId": "-2000023" },//门
+      //   // { "categoryId": "-2000120" }//楼梯
+      // ]);
+      viewer.hideComponentsByObjectData([{ "categoryId": "-2000100" }]);
+
+      // viewer.addBlinkComponentsById(["2019375144970432.3144112", "2019375144970432.3151588", "2019375144970432.3151358"]);
+      // viewer.setBlinkColor(new Glodon.Web.Graphics.Color("#FF0000", 0.8));
+      viewer.overrideComponentsColorByObjectData(["2019375144970432.3144112", "2019375144970432.3151588", "2019375144970432.3151358"], new Glodon.Web.Graphics.Color("#FF0000", 0.8));
+      // viewer.enableBlinkComponents(true);
+      // viewer.setBlinkIntervalTime(1000);
 
       // viewer.setGlowEffectById(["2008010937968640.2494384", "2008010937968640.2425823"], { type: "outline", color: new Glodon.Web.Graphics.Color(255, 0, 0, 1) });
       viewer.render();

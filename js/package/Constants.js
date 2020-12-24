@@ -38,6 +38,16 @@ var Constant = {
         transparentComponentsByObjectData: "transparentComponentsByObjectData",
         opaqueComponentsByObjectData: "opaqueComponentsByObjectData",
         showExclusiveComponentsByObjectData: "showExclusiveComponentsByObjectData"
+    },
+
+    category: {
+        equipment: -2001140,
+        wall: -2000011,
+        floor: -2000032,
+        dust: -2008000,
+        dust_tail: -2008010,
+        dust_pipe: -2008016,
+        terminal: -2008013,
     }
 }
 
